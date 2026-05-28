@@ -199,7 +199,12 @@ function renderBackgrounds() {
 }
 
 function selectBackground(bg, group) {
-  state.background = group === 'none' ? null : { ...bg, group };
+  if (group === 'none') {
+    state.background = null;
+  } else {
+    state.background = bg;
+    state.background.group = group;
+  }
   renderBackgrounds();
 }
 
