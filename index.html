@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>young-star ✦ photo booth</title>
+  <meta name="description" content="나만의 네컷사진 포토부스" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="grain"></div>
+
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-mark">✦</span>
+      <span class="logo-text">young-star</span>
+    </div>
+    <div class="tagline">photo booth · 2026</div>
+  </header>
+
+  <main class="stage">
+    <!-- 시작 화면 -->
+    <section id="screen-intro" class="screen active">
+      <div class="intro-inner">
+        <p class="kicker">welcome to</p>
+        <h1 class="title">
+          <span class="title-line">young</span>
+          <span class="title-line italic">★ star</span>
+        </h1>
+        <p class="lede">너만의 네컷사진을 남겨봐.<br/>총 4컷, 한 컷당 3초.</p>
+        <button class="btn-primary" id="btn-start">시작하기 →</button>
+        <p class="hint">카메라 권한을 허용해주세요</p>
+      </div>
+    </section>
+
+    <!-- 촬영 화면 -->
+    <section id="screen-shoot" class="screen">
+      <div class="shoot-grid">
+        <div class="cam-wrap">
+          <div class="cam-frame">
+            <video id="video" autoplay playsinline></video>
+            <div class="cam-overlay">
+              <div class="countdown" id="countdown"></div>
+              <div class="flash" id="flash"></div>
+            </div>
+            <div class="cam-corners">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="cam-info">
+            <span id="shot-count">0 / 4</span>
+            <span class="dot">·</span>
+            <span id="cam-status">대기 중</span>
+          </div>
+        </div>
+
+        <aside class="controls">
+          <div class="control-block">
+            <h3 class="control-title">필터</h3>
+            <div class="filter-list" id="filter-list">
+              <button class="filter-chip active" data-filter="none">오리지널</button>
+              <button class="filter-chip" data-filter="bw">흑백</button>
+              <button class="filter-chip" data-filter="sepia">세피아</button>
+              <button class="filter-chip" data-filter="vintage">빈티지</button>
+              <button class="filter-chip" data-filter="bright">밝게</button>
+            </div>
+          </div>
+
+          <div class="control-block">
+            <h3 class="control-title">미리보기</h3>
+            <div class="preview-strip" id="preview-strip">
+              <div class="preview-slot" data-i="0"></div>
+              <div class="preview-slot" data-i="1"></div>
+              <div class="preview-slot" data-i="2"></div>
+              <div class="preview-slot" data-i="3"></div>
+            </div>
+          </div>
+
+          <button class="btn-primary" id="btn-shoot">촬영 시작</button>
+          <button class="btn-ghost" id="btn-retake-all" disabled>다시 찍기</button>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 결과 화면 -->
+    <section id="screen-result" class="screen">
+      <div class="result-grid">
+        <div class="result-canvas-wrap">
+          <canvas id="result-canvas"></canvas>
+        </div>
+
+        <aside class="controls">
+          <div class="control-block">
+            <h3 class="control-title">프레임 색상</h3>
+            <div class="color-list" id="color-list">
+              <button class="color-chip active" data-color="#111111" style="--c:#111111" title="블랙"></button>
+              <button class="color-chip" data-color="#fafafa" style="--c:#fafafa" title="화이트"></button>
+              <button class="color-chip" data-color="#f4c3d0" style="--c:#f4c3d0" title="핑크"></button>
+              <button class="color-chip" data-color="#cdb8e3" style="--c:#cdb8e3" title="라벤더"></button>
+              <button class="color-chip" data-color="#e8dcc4" style="--c:#e8dcc4" title="베이지"></button>
+              <button class="color-chip" data-color="#b8c9b0" style="--c:#b8c9b0" title="세이지"></button>
+              <button class="color-chip" data-color="#6b9bd1" style="--c:#6b9bd1" title="블루"></button>
+              <button class="color-chip" data-color="#d4a574" style="--c:#d4a574" title="카멜"></button>
+            </div>
+          </div>
+
+          <div class="control-block">
+            <h3 class="control-title">날짜 표시</h3>
+            <label class="toggle">
+              <input type="checkbox" id="toggle-date" checked />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              <span class="toggle-label">날짜 넣기</span>
+            </label>
+          </div>
+
+          <button class="btn-primary" id="btn-download">사진 저장하기 ↓</button>
+          <button class="btn-ghost" id="btn-restart">처음으로</button>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>made with ✦ for fun</span>
+    <span class="footer-dot">·</span>
+    <span>young-star.com</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
