@@ -286,7 +286,7 @@ async function initSegmentation() {
   });
   selfieSegmentation.setOptions({
     modelSelection: 1, // 0=가벼움 1=정확함
-    selfieMode: true,
+    selfieMode: false, // 좌우반전은 우리가 직접 처리
   });
   selfieSegmentation.onResults(onSegmentationResults);
 
@@ -304,6 +304,10 @@ function onSegmentationResults(results) {
 
   ctx.save();
   ctx.clearRect(0, 0, w, h);
+
+  // 좌우반전 (거울모드)
+  ctx.translate(w, 0);
+  ctx.scale(-1, 1);
 
   // 1) 인물 마스크 모양으로 사람 그리기
   ctx.drawImage(results.segmentationMask, 0, 0, w, h);
@@ -492,7 +496,7 @@ async function shootSequence() {
   state.shooting = false;
   $('btn-shoot').disabled = false;
   $('btn-retake-all').disabled = false;
-  $('cam-status').textContent = 'looking gorgeous.';
+  $('cam-status').textContent = 'tada';
 
   await sleep(600);
   goToResult();
