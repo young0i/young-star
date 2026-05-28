@@ -205,6 +205,7 @@ function selectBackground(bg, group) {
     state.background = bg;
     state.background.group = group;
   }
+  invalidateBgCache();
   renderBackgrounds();
 }
 
@@ -309,33 +310,45 @@ function onSegmentationResults(results) {
   ctx.globalCompositeOperation = 'source-in';
   ctx.drawImage(results.image, 0, 0, w, h);
 
-  // 2) 사람 뒤에 배경 그리기
+  // 2) 사람 뒤에 배경 그리기 (미리 만들어둔 캔버스 사용)
   ctx.globalCompositeOperation = 'destination-over';
-  drawSelectedBackground(ctx, w, h);
+  const bgCanvas = getBackgroundCanvas(w, h);
+  if (bgCanvas) {
+    ctx.drawImage(bgCanvas, 0, 0, w, h);
+  } else {
+    // 배경 없음 → 원본 카메라
+    ctx.drawImage($('video'), 0, 0, w, h);
+  }
 
   ctx.restore();
 }
 
-// 선택한 배경을 캔버스에 그리는 함수
-function drawSelectedBackground(ctx, w, h) {
+// 배경 캔버스를 캐시 — 배경 바뀔 때만 다시 그림
+let cachedBgKey = null;
+let cachedBgCanvas = null;
+
+function getBackgroundCanvas(w, h) {
   const bg = state.background;
-  if (!bg || !bg.color) {
-    // 배경 없음 → 원본 카메라 영상 그대로
-    ctx.drawImage($('video'), 0, 0, w, h);
-    return;
-  }
+  if (!bg || !bg.color) return null;
 
-  // 단색
-  ctx.fillStyle = bg.color;
-  ctx.fillRect(0, 0, w, h);
+  const key = `${bg.id}-${w}-${h}`;
+  if (cachedBgKey === key && cachedBgCanvas) return cachedBgCanvas;
 
-  // 별 배경이면 별도 뿌리기
+  // 새로 그리기
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  const bctx = c.getContext('2d');
+
+  // 단색 깔기
+  bctx.fillStyle = bg.color;
+  bctx.fillRect(0, 0, w, h);
+
+  // 별 배경이면 별 그리기
   if (bg.group === 'stars') {
-    ctx.save();
-    ctx.fillStyle = bg.starColor;
-    // 그림자(빛나는 효과)
-    ctx.shadowColor = bg.starColor;
-    ctx.shadowBlur = 12;
+    bctx.fillStyle = bg.starColor;
+    bctx.shadowColor = bg.starColor;
+    bctx.shadowBlur = 15;
 
     const cols = 7, rows = 6;
     const stepX = w / cols, stepY = h / rows;
@@ -346,13 +359,29 @@ function drawSelectedBackground(ctx, w, h) {
         const offY = ((seed * 23) % 50) - 25;
         const cx = stepX * (c + 0.5) + offX;
         const cy = stepY * (r + 0.5) + offY;
-        // 별 크기 키움: 22~38px
-        const size = 22 + (seed % 5) * 4;
-        drawStarShape(ctx, cx, cy, size);
+        const size = 24 + (seed % 5) * 5;
+        drawStarShape(bctx, cx, cy, size);
       }
     }
-    ctx.restore();
+    // 한 번 더 작은 별 흩뿌리기
+    bctx.shadowBlur = 8;
+    for (let i = 0; i < 20; i++) {
+      const cx = (i * 137) % w;
+      const cy = (i * 211) % h;
+      const size = 8 + (i % 4) * 2;
+      drawStarShape(bctx, cx, cy, size);
+    }
   }
+
+  cachedBgKey = key;
+  cachedBgCanvas = c;
+  return c;
+}
+
+// 배경이 바뀌면 캐시 초기화
+function invalidateBgCache() {
+  cachedBgKey = null;
+  cachedBgCanvas = null;
 }
 
 function startRenderLoop() {
@@ -501,7 +530,7 @@ async function drawResult() {
   // 2) 사진 영역 계산
   const padX = 42;
   const padTop = 72;
-  const padBottom = 200;
+  const padBottom = 110;  // 로고 빠져서 여백 축소
   const gap = 16;
   const innerW = W - padX * 2;
   const innerH = H - padTop - padBottom;
@@ -543,19 +572,16 @@ async function drawResult() {
     ctx.fillText('young ★ star', W / 2, 48);
   }
 
-  // 5) 하단
-  const footerY = H - padBottom + 60;
-  ctx.fillStyle = frame.text;
-  ctx.textAlign = 'center';
-  ctx.font = 'italic 400 34px Fraunces, serif';
-  ctx.fillText('young ★ star', W / 2, footerY);
-
+  // 5) 하단 — 로고 없이 날짜만
+  const footerY = H - padBottom + 70;
   if (state.showDate) {
     const d = new Date();
     const dateStr = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-    ctx.font = '400 13px Inter, sans-serif';
+    ctx.fillStyle = frame.text;
+    ctx.textAlign = 'center';
+    ctx.font = '400 14px Inter, sans-serif';
     ctx.globalAlpha = 0.6;
-    ctx.fillText(`${dateStr}  ·  photo booth`, W / 2, footerY + 34);
+    ctx.fillText(`${dateStr}  ·  photo booth`, W / 2, footerY);
     ctx.globalAlpha = 1;
   }
 

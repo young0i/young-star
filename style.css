@@ -27,13 +27,18 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; background: var(--bg); }
+html, body {
+  height: 100%;
+  width: 100%;
+  background: var(--bg);
+  overflow-x: hidden;
+}
 
 body {
   font-family: var(--sans);
   color: var(--ink);
   min-height: 100vh;
-  overflow-x: hidden;
+  min-height: 100dvh; /* 모바일 주소창 고려 */
   -webkit-font-smoothing: antialiased;
   position: relative;
 }
@@ -57,7 +62,9 @@ body::before {
   position: relative;
   z-index: 1;
   min-height: 100vh;
-  animation: screenIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  min-height: 100dvh;
+  width: 100%;
+  animation: screenIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .screen.active { display: flex; flex-direction: column; }
 
@@ -1046,32 +1053,77 @@ body::before {
    =========================================== */
 
 @media (max-width: 860px) {
-  .top-nav { padding: 18px 20px; }
+  .top-nav { padding: 14px 16px; }
   .step-indicator { display: none; }
+  .nav-btn { font-size: 12px; }
 
-  .intro-canvas { padding: 24px; }
-  .hero-quote { font-size: 16px; }
+  .intro-canvas { padding: 24px 16px; }
+  .hero-quote { font-size: 15px; }
+  .eyebrow { gap: 10px; font-size: 10px; letter-spacing: 0.25em; margin-bottom: 28px; }
+  .line-deco { width: 28px; }
+  .float-star { font-size: 16px; }
 
-  .select-stage { padding: 40px 20px; gap: 28px; }
+  .select-stage { padding: 30px 16px 40px; gap: 24px; }
   .frame-showcase { gap: 8px; }
-  .frame-deck { gap: 14px; min-height: 380px; max-width: 100%; }
-  .frame-card { width: 110px; }
-  .arrow-btn { width: 38px; height: 38px; }
+  .frame-deck { gap: 12px; min-height: 340px; max-width: 100%; }
+  .frame-card { width: 100px; padding: 12px 10px 14px; }
+  .frame-card-title { font-size: 8px; }
+  .frame-card.center { transform: scale(1.1) translateY(-4px); }
+  .arrow-btn { width: 36px; height: 36px; flex-shrink: 0; }
+  .arrow-btn svg { width: 16px; height: 16px; }
+  .frame-current-name { font-size: 22px; margin-bottom: 12px; }
 
-  .bg-stage { padding: 30px 20px 40px; }
+  .bg-stage { padding: 24px 16px 40px; }
+  .bg-stage-head { margin-bottom: 32px; }
   .bg-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .bg-tile { aspect-ratio: 1 / 1; }
+  .bg-actions { flex-direction: column; gap: 12px; }
+  .bg-actions .cta, .bg-actions .ghost-btn { width: 100%; justify-content: center; }
 
-  .shoot-stage { padding: 24px 20px 40px; }
-  .countdown { font-size: 140px; }
+  .shoot-stage { padding: 20px 16px 32px; gap: 20px; }
+  .countdown { font-size: 120px; }
+  .cam-label-top { font-size: 9px; letter-spacing: 0.2em; }
+  .cam-label-bottom { font-size: 13px; }
   .shoot-buttons { flex-direction: column-reverse; }
   .shoot-buttons .cta, .shoot-buttons .ghost-btn { width: 100%; justify-content: center; }
+  .filter-bar { padding: 12px 0; }
+  .filter-btn { padding: 7px 12px; font-size: 11px; }
+  .p-slot { font-size: 22px; }
 
   .result-stage {
     grid-template-columns: 1fr;
-    gap: 32px;
-    padding: 30px 20px 50px;
+    gap: 28px;
+    padding: 24px 16px 40px;
+    align-items: stretch;
   }
   .result-side-info { order: 2; }
   .result-canvas-wrap { order: 1; }
+  #result-canvas { max-height: 65vh; }
   .result-side-info .cta { align-self: stretch; justify-content: center; }
+  .result-side-info .sub { margin-bottom: 28px; }
+  .ai-loading p { font-size: 13px; }
+}
+
+/* 아주 좁은 화면 (iPhone SE 등) */
+@media (max-width: 400px) {
+  .hero { font-size: clamp(64px, 18vw, 100px); }
+  .big-title { font-size: clamp(38px, 11vw, 56px); }
+  .nav-logo { display: none; }
+  .top-nav { grid-template-columns: 1fr 1fr; }
+
+  .frame-deck { min-height: 300px; gap: 8px; }
+  .frame-card { width: 84px; }
+  .frame-card-title { font-size: 7px; }
+
+  .bg-row { gap: 8px; }
+  .countdown { font-size: 96px; }
+}
+
+/* 가로 모드 모바일 */
+@media (max-height: 500px) and (orientation: landscape) {
+  .intro-canvas { padding: 16px; }
+  .hero { font-size: clamp(48px, 10vw, 80px); margin-bottom: 16px; }
+  .hero-quote { margin-bottom: 20px; font-size: 13px; }
+  .eyebrow { margin-bottom: 16px; }
+  .hero-foot { margin-top: 14px; }
 }
