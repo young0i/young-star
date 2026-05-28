@@ -235,11 +235,7 @@ async function proceedToShoot() {
   }
 }
 
-// ===== 4. 카메라 + MediaPipe 배경 분리 =====
-let selfieSegmentation = null;
-let renderLoopId = null;
-let aiReady = false;
-
+// ===== 4. 카메라 =====
 async function startCamera() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -247,29 +243,8 @@ async function startCamera() {
       audio: false,
     });
     state.stream = stream;
-    const video = $('video');
-    video.srcObject = stream;
-    await new Promise(resolve => {
-      if (video.readyState >= 2) resolve();
-      else video.onloadedmetadata = () => resolve();
-    });
-
-    // 캔버스 크기 비디오와 맞추기
-    const canvas = $('cam-canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
-    // AI 모델 초기화
-    if (!selfieSegmentation) {
-      $('cam-status').textContent = "AI 모델 준비 중...";
-      await initSegmentation();
-    }
-    $('ai-loading').classList.add('hidden');
-    aiReady = true;
+    $('video').srcObject = stream;
     $('cam-status').textContent = "ready when you are.";
-
-    // 렌더링 루프 시작
-    startRenderLoop();
     return true;
   } catch (err) {
     console.error(err);
@@ -279,98 +254,6 @@ async function startCamera() {
   }
 }
 
-async function initSegmentation() {
-  selfieSegmentation = new SelfieSegmentation({
-    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
-  });
-  selfieSegmentation.setOptions({
-    modelSelection: 1, // 0=가벼움 1=정확함
-    selfieMode: true,
-  });
-  selfieSegmentation.onResults(onSegmentationResults);
-
-  // 첫 프레임 보내서 모델 로드시키기
-  const video = $('video');
-  await selfieSegmentation.send({ image: video });
-}
-
-// 매 프레임마다 결과를 캔버스에 그림
-function onSegmentationResults(results) {
-  const canvas = $('cam-canvas');
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width;
-  const h = canvas.height;
-
-  ctx.save();
-  ctx.clearRect(0, 0, w, h);
-
-  // 1) 인물 마스크 모양으로 사람 그리기
-  ctx.drawImage(results.segmentationMask, 0, 0, w, h);
-  ctx.globalCompositeOperation = 'source-in';
-  ctx.drawImage(results.image, 0, 0, w, h);
-
-  // 2) 사람 뒤에 배경 그리기
-  ctx.globalCompositeOperation = 'destination-over';
-  drawSelectedBackground(ctx, w, h);
-
-  ctx.restore();
-}
-
-// 선택한 배경을 캔버스에 그리는 함수
-function drawSelectedBackground(ctx, w, h) {
-  const bg = state.background;
-  if (!bg || !bg.color) {
-    // 배경 없음 → 원본 카메라 영상 그대로
-    ctx.drawImage($('video'), 0, 0, w, h);
-    return;
-  }
-
-  // 단색
-  ctx.fillStyle = bg.color;
-  ctx.fillRect(0, 0, w, h);
-
-  // 별 배경이면 별도 뿌리기
-  if (bg.group === 'stars') {
-    ctx.save();
-    ctx.fillStyle = bg.starColor;
-    const cols = 6, rows = 5;
-    const stepX = w / cols, stepY = h / rows;
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const seed = r * cols + c;
-        const offX = ((seed * 37) % 40) - 20;
-        const offY = ((seed * 23) % 36) - 18;
-        const cx = stepX * (c + 0.5) + offX;
-        const cy = stepY * (r + 0.5) + offY;
-        const size = 12 + (seed % 4) * 4;
-        drawStarShape(ctx, cx, cy, size);
-      }
-    }
-    ctx.restore();
-  }
-}
-
-function startRenderLoop() {
-  const video = $('video');
-  let lastTime = 0;
-  const targetFps = 24;
-  const minInterval = 1000 / targetFps;
-
-  async function loop(now) {
-    if (!state.stream) return;
-    if (now - lastTime >= minInterval && aiReady && video.readyState >= 2) {
-      lastTime = now;
-      try {
-        await selfieSegmentation.send({ image: video });
-      } catch (e) {
-        console.error('segmentation error:', e);
-      }
-    }
-    renderLoopId = requestAnimationFrame(loop);
-  }
-  renderLoopId = requestAnimationFrame(loop);
-}
-
 // 필터
 $('filter-list').addEventListener('click', (e) => {
   const btn = e.target.closest('.filter-btn');
@@ -378,9 +261,9 @@ $('filter-list').addEventListener('click', (e) => {
   $('filter-list').querySelectorAll('.filter-btn').forEach(c => c.classList.remove('active'));
   btn.classList.add('active');
   state.filter = btn.dataset.filter;
-  const canvas = $('cam-canvas');
-  canvas.className = '';
-  if (state.filter !== 'none') canvas.classList.add('filter-' + state.filter);
+  const video = $('video');
+  video.className = '';
+  if (state.filter !== 'none') video.classList.add('filter-' + state.filter);
 });
 
 function filterToCanvasString(f) {
@@ -393,16 +276,16 @@ function filterToCanvasString(f) {
   }
 }
 
-// 합성된 캔버스를 그대로 캡쳐
 function captureFrame() {
-  const camCanvas = $('cam-canvas');
-  // 필터까지 적용된 결과로 캡쳐하기 위해 임시 캔버스에 그리기
+  const video = $('video');
+  const w = video.videoWidth, h = video.videoHeight;
   const c = document.createElement('canvas');
-  c.width = camCanvas.width;
-  c.height = camCanvas.height;
+  c.width = w; c.height = h;
   const ctx = c.getContext('2d');
+  ctx.translate(w, 0);
+  ctx.scale(-1, 1);
   ctx.filter = filterToCanvasString(state.filter);
-  ctx.drawImage(camCanvas, 0, 0);
+  ctx.drawImage(video, 0, 0, w, h);
   return c.toDataURL('image/jpeg', 0.92);
 }
 
@@ -502,19 +385,33 @@ async function drawResult() {
   const innerH = H - padTop - padBottom;
   const cellH = (innerH - gap * 3) / 4;
 
-  // 3) 사진 그리기 (이미 인물+배경이 합쳐진 상태로 들어옴)
+  // 3) 사진 + 배경
   await Promise.all(state.shots.map((src, i) => new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
       const y = padTop + i * (cellH + gap);
+      const hasBackground = state.background && state.background.color;
 
-      // 셀 배경 (이미지 로드 실패 대비)
-      ctx.fillStyle = '#000';
-      ctx.fillRect(padX, y, innerW, cellH);
+      // 배경이 있으면 셀 전체에 배경 깔기
+      if (hasBackground) {
+        ctx.fillStyle = state.background.color;
+        ctx.fillRect(padX, y, innerW, cellH);
+        if (state.background.group === 'stars') {
+          drawStarsOnRect(ctx, padX, y, innerW, cellH, state.background.starColor);
+        }
+      }
 
-      // 사진 cover 크롭으로 꽉 채우기
+      // 배경이 있으면 사진을 살짝 작게 그려서 배경이 테두리처럼 보이게,
+      // 배경이 없으면 사진을 셀 전체에 꽉 채워서 그리기
+      const inset = hasBackground ? 18 : 0;
+      const dx = padX + inset;
+      const dy = y + inset;
+      const dw = innerW - inset * 2;
+      const dh = cellH - inset * 2;
+
+      // 사진 cover 크롭
       const ir = img.width / img.height;
-      const cr = innerW / cellH;
+      const cr = dw / dh;
       let sx = 0, sy = 0, sw = img.width, sh = img.height;
       if (ir > cr) {
         sw = img.height * cr;
@@ -523,7 +420,7 @@ async function drawResult() {
         sh = img.width / cr;
         sy = (img.height - sh) / 2;
       }
-      ctx.drawImage(img, sx, sy, sw, sh, padX, y, innerW, cellH);
+      ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
 
       resolve();
     };
@@ -637,7 +534,6 @@ $('btn-restart').addEventListener('click', () => {
 // 정리
 window.addEventListener('beforeunload', () => {
   if (state.stream) state.stream.getTracks().forEach(t => t.stop());
-  if (renderLoopId) cancelAnimationFrame(renderLoopId);
 });
 
 // 초기값
