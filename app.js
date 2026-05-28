@@ -333,16 +333,21 @@ function drawSelectedBackground(ctx, w, h) {
   if (bg.group === 'stars') {
     ctx.save();
     ctx.fillStyle = bg.starColor;
-    const cols = 6, rows = 5;
+    // 그림자(빛나는 효과)
+    ctx.shadowColor = bg.starColor;
+    ctx.shadowBlur = 12;
+
+    const cols = 7, rows = 6;
     const stepX = w / cols, stepY = h / rows;
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         const seed = r * cols + c;
-        const offX = ((seed * 37) % 40) - 20;
-        const offY = ((seed * 23) % 36) - 18;
+        const offX = ((seed * 37) % 60) - 30;
+        const offY = ((seed * 23) % 50) - 25;
         const cx = stepX * (c + 0.5) + offX;
         const cy = stepY * (r + 0.5) + offY;
-        const size = 12 + (seed % 4) * 4;
+        // 별 크기 키움: 22~38px
+        const size = 22 + (seed % 5) * 4;
         drawStarShape(ctx, cx, cy, size);
       }
     }
