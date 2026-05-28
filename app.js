@@ -2,33 +2,33 @@
 
 // ===== 데이터 =====
 const FRAMES = [
-  { id: 'black',    name: 'Black',    theme: 'black',    bg: '#0a0a0a', text: '#fff' },
-  { id: 'white',    name: 'White',    theme: 'white',    bg: '#fafafa', text: '#111' },
-  { id: 'purple',   name: 'Purple',   theme: 'purple',   bg: '#4a3db5', text: '#fff' },
-  { id: 'lavender', name: 'Lavender', theme: 'lavender', bg: '#cfc4ec', text: '#2a1f5a' },
-  { id: 'beige',    name: 'Beige',    theme: 'beige',    bg: '#e8dcc4', text: '#3a2e1a' },
-  { id: 'pink',     name: 'Pink',     theme: 'pink',     bg: '#f3cfd9', text: '#5a2738' },
+  { id: 'ink',    name: 'Ink',    theme: 'ink',    bg: '#0a0a0a', text: '#ffffff' },
+  { id: 'paper',  name: 'Paper',  theme: 'paper',  bg: '#f4ede0', text: '#2a1a14' },
+  { id: 'plum',   name: 'Plum',   theme: 'plum',   bg: '#3d1a4f', text: '#f0e6f8' },
+  { id: 'lilac',  name: 'Lilac',  theme: 'lilac',  bg: '#d4c5ee', text: '#2a1a4f' },
+  { id: 'blush',  name: 'Blush',  theme: 'blush',  bg: '#efcfd6', text: '#4a1f2a' },
+  { id: 'moss',   name: 'Moss',   theme: 'moss',   bg: '#3a4a35', text: '#ecf0e3' },
 ];
 
 const BACKGROUNDS = {
   stars: [
-    { id: 'star-navy',    name: 'Navy / Gold',   color: '#0e1538', starColor: '#f5c44a', label: 'Navy / Gold' },
-    { id: 'star-black',   name: 'Black / White', color: '#0a0a0a', starColor: '#ffffff', label: 'Black / White' },
-    { id: 'star-pink',    name: 'Pink / Green',  color: '#d96b8e', starColor: '#4caf7a', label: 'Pink / Green' },
-    { id: 'star-green',   name: 'Green / Pink',  color: '#2f5a3f', starColor: '#e89db3', label: 'Green / Pink' },
-    { id: 'star-burgundy',name: 'Burgundy / Blue', color: '#5a1f2e', starColor: '#a5c8e6', label: 'Burgundy / Blue' },
-    { id: 'star-red',     name: 'Red / Gold',    color: '#7a2030', starColor: '#f0c14b', label: 'Red / Gold' },
+    { id: 'star-navy',     name: 'Midnight',  color: '#0e1538', starColor: '#f5c44a' },
+    { id: 'star-black',    name: 'Mono',      color: '#0a0a0a', starColor: '#ffffff' },
+    { id: 'star-rose',     name: 'Rose',      color: '#d96b8e', starColor: '#4caf7a' },
+    { id: 'star-forest',   name: 'Forest',    color: '#2f5a3f', starColor: '#e89db3' },
+    { id: 'star-burgundy', name: 'Burgundy',  color: '#5a1f2e', starColor: '#a5c8e6' },
+    { id: 'star-claret',   name: 'Claret',    color: '#7a2030', starColor: '#f0c14b' },
   ],
   basic: [
-    { id: 'basic-black',  name: 'Black',  color: '#1a1a1a' },
-    { id: 'basic-white',  name: 'White',  color: '#fafafa' },
-    { id: 'basic-blue',   name: 'Blue',   color: '#3d6f8f' },
-    { id: 'basic-green',  name: 'Green',  color: '#5a8055' },
-    { id: 'basic-yellow', name: 'Yellow', color: '#d9b440' },
-    { id: 'basic-rose',   name: 'Rose',   color: '#c97090' },
+    { id: 'basic-black',  name: 'Onyx',   color: '#1a1a1a' },
+    { id: 'basic-white',  name: 'Snow',   color: '#fafafa' },
+    { id: 'basic-blue',   name: 'Ocean',  color: '#3d6f8f' },
+    { id: 'basic-green',  name: 'Sage',   color: '#5a8055' },
+    { id: 'basic-yellow', name: 'Honey',  color: '#d9b440' },
+    { id: 'basic-rose',   name: 'Petal',  color: '#c97090' },
   ],
   none: [
-    { id: 'none', name: 'No background', color: null }
+    { id: 'none', name: 'No backdrop', color: null }
   ]
 };
 
@@ -39,91 +39,73 @@ const state = {
   shots: [],
   shotCount: 0,
   shooting: false,
-  frameIdx: 0,            // FRAMES 인덱스
-  background: null,       // 선택된 배경 객체 (null = no bg)
+  frameIdx: 0,
+  background: null,
   showDate: true,
   showTitle: true,
-  history: [],            // 화면 이동 히스토리 (back 버튼용)
 };
 
 // ===== 유틸 =====
 const $ = (id) => document.getElementById(id);
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-function showScreen(id, pushHistory = true) {
-  const current = document.querySelector('.screen.active');
-  if (current && pushHistory && current.id !== id) {
-    state.history.push(current.id);
-  }
+function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  $(id).classList.add('active');
-  updateBackButton();
+  const target = $(id);
+  if (target) target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-function updateBackButton() {
-  const btn = $('nav-back');
-  if (state.history.length > 0) {
-    btn.classList.add('visible');
-  } else {
-    btn.classList.remove('visible');
-  }
-}
-
-$('nav-back').addEventListener('click', () => {
-  if (state.history.length === 0) return;
-  const prev = state.history.pop();
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  $(prev).classList.add('active');
-  updateBackButton();
+// 모든 back 버튼 자동 처리
+document.querySelectorAll('[data-back]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    showScreen(btn.dataset.back);
+  });
 });
 
-// ===== 인트로 → 프레임 선택 =====
+// ===== 1. 인트로 → 프레임 =====
 $('btn-begin').addEventListener('click', () => {
   showScreen('screen-frame');
   renderFrameCarousel();
 });
 
-// ===== 프레임 캐러셀 =====
+// ===== 2. 프레임 캐러셀 =====
 function renderFrameCarousel() {
-  const stage = $('frame-stage');
+  const deck = $('frame-deck');
   const dots = $('frame-dots');
-  stage.innerHTML = '';
+  deck.innerHTML = '';
   dots.innerHTML = '';
 
-  // 왼쪽, 중앙, 오른쪽 3장만 보여주는 캐러셀
   const len = FRAMES.length;
   const idx = state.frameIdx;
   const leftIdx = (idx - 1 + len) % len;
   const rightIdx = (idx + 1) % len;
 
-  [leftIdx, idx, rightIdx].forEach((i, pos) => {
+  // 좌·중·우 카드 3장
+  [
+    { i: leftIdx, pos: 'side', onclick: () => { state.frameIdx = leftIdx; renderFrameCarousel(); } },
+    { i: idx, pos: 'center', onclick: null },
+    { i: rightIdx, pos: 'side', onclick: () => { state.frameIdx = rightIdx; renderFrameCarousel(); } },
+  ].forEach(({ i, pos, onclick }) => {
     const f = FRAMES[i];
     const card = document.createElement('div');
-    card.className = `frame-card theme-${f.theme}`;
-    if (pos === 1) card.classList.add('center');
-    else card.classList.add('side');
-
+    card.className = `frame-card theme-${f.theme} ${pos}`;
     card.innerHTML = `
-      <div class="frame-card-title">Photo ★ Star</div>
+      <div class="frame-card-title">young ★ star</div>
       <div class="frame-card-slot"></div>
       <div class="frame-card-slot"></div>
       <div class="frame-card-slot"></div>
       <div class="frame-card-slot"></div>
     `;
-
-    if (pos === 0) card.addEventListener('click', () => { state.frameIdx = leftIdx; renderFrameCarousel(); });
-    if (pos === 2) card.addEventListener('click', () => { state.frameIdx = rightIdx; renderFrameCarousel(); });
-
-    stage.appendChild(card);
+    if (onclick) card.addEventListener('click', onclick);
+    deck.appendChild(card);
   });
 
-  // 이름
   $('frame-name').textContent = FRAMES[idx].name;
 
-  // 점 인디케이터
   FRAMES.forEach((_, i) => {
     const dot = document.createElement('button');
-    dot.className = 'carousel-dot' + (i === idx ? ' active' : '');
+    dot.className = 'dot-btn' + (i === idx ? ' active' : '');
     dot.addEventListener('click', () => { state.frameIdx = i; renderFrameCarousel(); });
     dots.appendChild(dot);
   });
@@ -143,68 +125,90 @@ $('btn-frame-select').addEventListener('click', () => {
   renderBackgrounds();
 });
 
-// ===== 배경 선택 =====
+// ===== 3. 배경 선택 =====
 function makeStarTileSVG(color, starColor) {
-  // 작은 별 패턴 SVG (썸네일용)
-  return `data:image/svg+xml;utf8,${encodeURIComponent(`
-    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 100' preserveAspectRatio='xMidYMid slice'>
-      <rect width='160' height='100' fill='${color}'/>
-      <g fill='${starColor}'>
-        ${[
-          [25,20],[60,15],[100,22],[135,18],
-          [40,50],[80,48],[120,52],
-          [20,80],[55,78],[95,82],[130,80]
-        ].map(([x,y]) => `<path d='M${x} ${y-7} L${x+2} ${y-2} L${x+7} ${y-2} L${x+3} ${y+1} L${x+5} ${y+6} L${x} ${y+3} L${x-5} ${y+6} L${x-3} ${y+1} L${x-7} ${y-2} L${x-2} ${y-2} Z'/>`).join('')}
-      </g>
-    </svg>
-  `)}`;
+  const positions = [
+    [25,18],[60,12],[100,22],[135,16],
+    [40,48],[80,52],[120,46],
+    [22,76],[58,82],[95,78],[130,74]
+  ];
+  const stars = positions.map(([x, y]) => {
+    const p = drawStarPath(x, y, 6, 2.6);
+    return `<path d="${p}"/>`;
+  }).join('');
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 100' preserveAspectRatio='xMidYMid slice'>
+    <rect width='160' height='100' fill='${color}'/>
+    <g fill='${starColor}'>${stars}</g>
+  </svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
+function drawStarPath(cx, cy, outer, inner) {
+  const spikes = 5;
+  let path = '';
+  let rot = -Math.PI / 2;
+  const step = Math.PI / spikes;
+  for (let i = 0; i < spikes * 2; i++) {
+    const r = i % 2 === 0 ? outer : inner;
+    const x = cx + Math.cos(rot) * r;
+    const y = cy + Math.sin(rot) * r;
+    path += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1);
+    rot += step;
+  }
+  path += 'Z';
+  return path;
 }
 
 function renderBackgrounds() {
-  const starsGrid = $('bg-stars-grid');
-  const basicGrid = $('bg-basic-grid');
-  const noneGrid = $('bg-none-grid');
-  starsGrid.innerHTML = '';
-  basicGrid.innerHTML = '';
-  noneGrid.innerHTML = '';
+  const starsRow = $('bg-stars-row');
+  const basicRow = $('bg-basic-row');
+  const noneRow = $('bg-none-row');
+  starsRow.innerHTML = '';
+  basicRow.innerHTML = '';
+  noneRow.innerHTML = '';
 
-  // 별 배경
   BACKGROUNDS.stars.forEach(bg => {
     const tile = document.createElement('button');
     tile.className = 'bg-tile';
     tile.style.backgroundImage = `url("${makeStarTileSVG(bg.color, bg.starColor)}")`;
     tile.style.backgroundSize = 'cover';
-    tile.innerHTML = `<span class="bg-tile-label">${bg.label}</span>`;
+    tile.innerHTML = `<span class="bg-tile-label">${bg.name}</span>`;
     tile.addEventListener('click', () => selectBackground(bg, 'stars'));
     if (state.background?.id === bg.id) tile.classList.add('active');
-    starsGrid.appendChild(tile);
+    starsRow.appendChild(tile);
   });
 
-  // 단색 배경
   BACKGROUNDS.basic.forEach(bg => {
     const tile = document.createElement('button');
     tile.className = 'bg-tile';
     tile.style.background = bg.color;
-    tile.innerHTML = `<span class="bg-tile-label">${bg.name}</span>`;
+    tile.innerHTML = `<span class="bg-tile-label" style="color:${isColorDark(bg.color) ? '#fff' : '#1a1a1a'};text-shadow:none">${bg.name}</span>`;
     tile.addEventListener('click', () => selectBackground(bg, 'basic'));
     if (state.background?.id === bg.id) tile.classList.add('active');
-    basicGrid.appendChild(tile);
+    basicRow.appendChild(tile);
   });
 
-  // 배경 없음
   BACKGROUNDS.none.forEach(bg => {
     const tile = document.createElement('button');
     tile.className = 'bg-tile bg-checker';
     tile.innerHTML = `<span class="bg-tile-label">${bg.name}</span>`;
     tile.addEventListener('click', () => selectBackground(bg, 'none'));
     if (state.background?.id === bg.id) tile.classList.add('active');
-    noneGrid.appendChild(tile);
+    noneRow.appendChild(tile);
   });
 }
 
 function selectBackground(bg, group) {
-  state.background = { ...bg, group };
+  state.background = group === 'none' ? null : { ...bg, group };
   renderBackgrounds();
+}
+
+function isColorDark(hex) {
+  const c = hex.replace('#', '');
+  const r = parseInt(c.substring(0, 2), 16);
+  const g = parseInt(c.substring(2, 4), 16);
+  const b = parseInt(c.substring(4, 6), 16);
+  return (r * 299 + g * 587 + b * 114) / 1000 < 140;
 }
 
 $('btn-skip-bg').addEventListener('click', () => {
@@ -221,14 +225,12 @@ async function proceedToShoot() {
   if (!state.stream) {
     const ok = await startCamera();
     if (!ok) {
-      // 카메라 실패 시 한 단계 뒤로
-      state.history.pop();
-      showScreen('screen-bg', false);
+      showScreen('screen-bg');
     }
   }
 }
 
-// ===== 카메라 =====
+// ===== 4. 카메라 =====
 async function startCamera() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -237,23 +239,23 @@ async function startCamera() {
     });
     state.stream = stream;
     $('video').srcObject = stream;
-    $('cam-status').textContent = '준비 완료';
+    $('cam-status').textContent = "ready when you are.";
     return true;
   } catch (err) {
     console.error(err);
-    alert('카메라 권한을 허용해주세요!\n\n오류: ' + err.message);
-    $('cam-status').textContent = '카메라 오류';
+    alert('카메라 권한을 허용해주세요!\n\n' + err.message);
+    $('cam-status').textContent = 'camera unavailable';
     return false;
   }
 }
 
-// ===== 필터 =====
+// 필터
 $('filter-list').addEventListener('click', (e) => {
-  const chip = e.target.closest('.chip');
-  if (!chip) return;
-  $('filter-list').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  chip.classList.add('active');
-  state.filter = chip.dataset.filter;
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  $('filter-list').querySelectorAll('.filter-btn').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  state.filter = btn.dataset.filter;
   const video = $('video');
   video.className = '';
   if (state.filter !== 'none') video.classList.add('filter-' + state.filter);
@@ -269,7 +271,6 @@ function filterToCanvasString(f) {
   }
 }
 
-// ===== 캡쳐 =====
 function captureFrame() {
   const video = $('video');
   const w = video.videoWidth, h = video.videoHeight;
@@ -283,7 +284,7 @@ function captureFrame() {
   return c.toDataURL('image/jpeg', 0.92);
 }
 
-// ===== 카운트다운 =====
+// 카운트다운
 async function runCountdown(seconds) {
   const el = $('countdown');
   for (let i = seconds; i >= 1; i--) {
@@ -297,38 +298,36 @@ async function runCountdown(seconds) {
   el.textContent = '';
 }
 
-function flash() {
+function fireFlash() {
   const el = $('flash');
   el.classList.remove('fire');
   void el.offsetWidth;
   el.classList.add('fire');
 }
 
-// ===== 촬영 시퀀스 =====
 async function shootSequence() {
   if (state.shooting) return;
   state.shooting = true;
   state.shots = [];
   state.shotCount = 0;
-  document.querySelectorAll('.progress-slot').forEach(s => {
+  document.querySelectorAll('.p-slot').forEach(s => {
     s.classList.remove('filled');
     s.style.backgroundImage = '';
   });
 
   $('btn-shoot').disabled = true;
-  $('btn-shoot').textContent = '촬영 중...';
   $('btn-retake-all').disabled = true;
 
   for (let i = 0; i < 4; i++) {
-    $('cam-status').textContent = `${i + 1}번째 컷 준비`;
+    $('cam-status').textContent = `frame ${i + 1} — get ready`;
     await runCountdown(3);
-    flash();
+    fireFlash();
     await sleep(120);
     const data = captureFrame();
     state.shots.push(data);
     state.shotCount++;
     $('shot-count').textContent = `${state.shotCount} / 4`;
-    const slot = document.querySelector(`.progress-slot[data-i="${i}"]`);
+    const slot = document.querySelector(`.p-slot[data-i="${i}"]`);
     slot.style.backgroundImage = `url(${data})`;
     slot.classList.add('filled');
     await sleep(700);
@@ -336,75 +335,70 @@ async function shootSequence() {
 
   state.shooting = false;
   $('btn-shoot').disabled = false;
-  $('btn-shoot').textContent = '다시 시작';
   $('btn-retake-all').disabled = false;
-  $('cam-status').textContent = '완료!';
+  $('cam-status').textContent = 'looking gorgeous.';
 
-  await sleep(500);
+  await sleep(600);
   goToResult();
 }
 
 $('btn-shoot').addEventListener('click', shootSequence);
+
 $('btn-retake-all').addEventListener('click', () => {
   state.shots = [];
   state.shotCount = 0;
   $('shot-count').textContent = '0 / 4';
-  document.querySelectorAll('.progress-slot').forEach(s => {
+  document.querySelectorAll('.p-slot').forEach(s => {
     s.classList.remove('filled');
     s.style.backgroundImage = '';
   });
-  $('btn-shoot').textContent = '촬영 시작';
   $('btn-retake-all').disabled = true;
-  $('cam-status').textContent = '준비 완료';
+  $('cam-status').textContent = "ready when you are.";
 });
 
-// ===== 결과 그리기 (세로 스트립) =====
+// ===== 5. 결과 그리기 =====
 async function drawResult() {
   const canvas = $('result-canvas');
   const ctx = canvas.getContext('2d');
 
-  // 세로 4컷 스트립: 600 x 1800
   const W = 600, H = 1800;
   canvas.width = W;
   canvas.height = H;
 
   const frame = FRAMES[state.frameIdx];
 
-  // 1) 프레임 배경 (테두리)
+  // 1) 프레임 배경
   ctx.fillStyle = frame.bg;
   ctx.fillRect(0, 0, W, H);
 
-  // 2) 사진 영역
-  const padX = 40;
-  const padTop = 70;
-  const padBottom = 180;
-  const gap = 14;
+  // 2) 사진 영역 계산
+  const padX = 42;
+  const padTop = 72;
+  const padBottom = 200;
+  const gap = 16;
   const innerW = W - padX * 2;
   const innerH = H - padTop - padBottom;
   const cellH = (innerH - gap * 3) / 4;
 
-  // 3) 사진 그리기 + 배경 합성
+  // 3) 사진 + 배경
   await Promise.all(state.shots.map((src, i) => new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
       const y = padTop + i * (cellH + gap);
 
-      // 배경 먼저 (사진 영역 안에)
+      // 배경
       if (state.background && state.background.color) {
         ctx.fillStyle = state.background.color;
         ctx.fillRect(padX, y, innerW, cellH);
-
-        // 별 패턴이면 별 그리기
         if (state.background.group === 'stars') {
-          drawStarsPattern(ctx, padX, y, innerW, cellH, state.background.starColor);
+          drawStarsOnRect(ctx, padX, y, innerW, cellH, state.background.starColor);
         }
       } else {
-        // 배경 없음 → 사진 전체로 채움 (기본)
         ctx.fillStyle = '#000';
         ctx.fillRect(padX, y, innerW, cellH);
       }
 
-      // 사진 cover로 그리기
+      // 사진 cover
       const ir = img.width / img.height;
       const cr = innerW / cellH;
       let sx = 0, sy = 0, sw = img.width, sh = img.height;
@@ -426,69 +420,62 @@ async function drawResult() {
   if (state.showTitle) {
     ctx.fillStyle = frame.text;
     ctx.textAlign = 'center';
-    ctx.font = '500 italic 28px Fraunces, serif';
-    ctx.fillText('young ★ star', W / 2, 44);
+    ctx.font = 'italic 400 26px Fraunces, serif';
+    ctx.fillText('young ★ star', W / 2, 48);
   }
 
-  // 5) 하단 로고/날짜
-  const footerY = H - padBottom + 50;
+  // 5) 하단
+  const footerY = H - padBottom + 60;
   ctx.fillStyle = frame.text;
   ctx.textAlign = 'center';
-  ctx.font = '500 italic 32px Fraunces, serif';
+  ctx.font = 'italic 400 34px Fraunces, serif';
   ctx.fillText('young ★ star', W / 2, footerY);
 
   if (state.showDate) {
     const d = new Date();
     const dateStr = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-    ctx.font = '400 14px Inter, sans-serif';
-    ctx.fillStyle = frame.text;
+    ctx.font = '400 13px Inter, sans-serif';
     ctx.globalAlpha = 0.6;
-    ctx.fillText(`${dateStr}  ·  PHOTO BOOTH`, W / 2, footerY + 32);
+    ctx.fillText(`${dateStr}  ·  photo booth`, W / 2, footerY + 34);
     ctx.globalAlpha = 1;
   }
 
-  // 설정 표시 업데이트
   $('result-frame-name').textContent = frame.name;
   $('result-bg-name').textContent = state.background ? state.background.name : 'None';
 }
 
-function drawStarsPattern(ctx, x, y, w, h, starColor) {
+function drawStarsOnRect(ctx, x, y, w, h, starColor) {
   ctx.save();
   ctx.fillStyle = starColor;
-  // 적당한 별 위치 시드 (사이즈에 맞게 분포)
-  const cols = 4, rows = 3;
+  const cols = 4, rows = 4;
   const stepX = w / cols, stepY = h / rows;
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      // 살짝 랜덤 오프셋 (시드 기반)
-      const seed = (r * cols + c);
-      const offX = ((seed * 31) % 30) - 15;
-      const offY = ((seed * 17) % 24) - 12;
+      const seed = r * cols + c;
+      const offX = ((seed * 37) % 28) - 14;
+      const offY = ((seed * 23) % 22) - 11;
       const cx = x + stepX * (c + 0.5) + offX;
       const cy = y + stepY * (r + 0.5) + offY;
-      const size = 12 + (seed % 4) * 2;
-      drawStar(ctx, cx, cy, size);
+      const size = 10 + (seed % 4) * 2;
+      drawStarShape(ctx, cx, cy, size);
     }
   }
   ctx.restore();
 }
 
-function drawStar(ctx, cx, cy, size) {
+function drawStarShape(ctx, cx, cy, size) {
   const spikes = 5;
   const outer = size;
   const inner = size * 0.45;
-  let rot = Math.PI / 2 * 3;
+  let rot = -Math.PI / 2;
   const step = Math.PI / spikes;
   ctx.beginPath();
-  ctx.moveTo(cx, cy - outer);
-  for (let i = 0; i < spikes; i++) {
-    let x = cx + Math.cos(rot) * outer;
-    let y = cy + Math.sin(rot) * outer;
-    ctx.lineTo(x, y);
-    rot += step;
-    x = cx + Math.cos(rot) * inner;
-    y = cy + Math.sin(rot) * inner;
-    ctx.lineTo(x, y);
+  for (let i = 0; i < spikes * 2; i++) {
+    const r = i % 2 === 0 ? outer : inner;
+    const x = cx + Math.cos(rot) * r;
+    const y = cy + Math.sin(rot) * r;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
     rot += step;
   }
   ctx.closePath();
@@ -500,7 +487,7 @@ async function goToResult() {
   await drawResult();
 }
 
-// 토글
+// 옵션 토글
 $('toggle-date').addEventListener('change', async (e) => {
   state.showDate = e.target.checked;
   await drawResult();
@@ -524,15 +511,13 @@ $('btn-download').addEventListener('click', () => {
 $('btn-restart').addEventListener('click', () => {
   state.shots = [];
   state.shotCount = 0;
-  state.history = [];
   $('shot-count').textContent = '0 / 4';
-  document.querySelectorAll('.progress-slot').forEach(s => {
+  document.querySelectorAll('.p-slot').forEach(s => {
     s.classList.remove('filled');
     s.style.backgroundImage = '';
   });
-  $('btn-shoot').textContent = '촬영 시작';
   $('btn-retake-all').disabled = true;
-  showScreen('screen-intro', false);
+  showScreen('screen-intro');
 });
 
 // 정리
@@ -540,5 +525,5 @@ window.addEventListener('beforeunload', () => {
   if (state.stream) state.stream.getTracks().forEach(t => t.stop());
 });
 
-// 초기 상태
-state.background = BACKGROUNDS.stars[1]; // 기본값: Black/White 별 배경
+// 초기값
+state.background = BACKGROUNDS.stars[1]; // Mono (검정+흰별)
