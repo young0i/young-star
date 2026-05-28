@@ -3,128 +3,200 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>young-star ✦ photo booth</title>
+  <title>young ★ star · photo booth</title>
   <meta name="description" content="나만의 네컷사진 포토부스" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="grain"></div>
+  <!-- 배경 별 패턴 (장식) -->
+  <div class="bg-stars" aria-hidden="true"></div>
 
-  <header class="site-header">
-    <div class="logo">
-      <span class="logo-mark">✦</span>
-      <span class="logo-text">young-star</span>
-    </div>
-    <div class="tagline">photo booth · 2026</div>
+  <!-- 상단 네비 -->
+  <header class="nav">
+    <button class="nav-back" id="nav-back" aria-label="뒤로">
+      <span>←</span> back
+    </button>
+    <div class="nav-logo">young <span class="star">★</span> star</div>
+    <div class="nav-spacer"></div>
   </header>
 
-  <main class="stage">
-    <!-- 시작 화면 -->
-    <section id="screen-intro" class="screen active">
-      <div class="intro-inner">
-        <p class="kicker">welcome to</p>
-        <h1 class="title">
-          <span class="title-line">young</span>
-          <span class="title-line italic">★ star</span>
-        </h1>
-        <p class="lede">너만의 네컷사진을 남겨봐.<br/>총 4컷, 한 컷당 3초.</p>
-        <button class="btn-primary" id="btn-start">시작하기 →</button>
-        <p class="hint">카메라 권한을 허용해주세요</p>
+  <!-- ====== 1. 인트로 ====== -->
+  <section id="screen-intro" class="screen active">
+    <div class="intro-wrap">
+      <p class="eyebrow">photo booth · est. 2026</p>
+      <h1 class="hero-title">
+        <span>young</span>
+        <span class="hero-star">★</span>
+        <span class="italic">star</span>
+      </h1>
+      <p class="hero-sub">너만을 위한 네컷사진.<br/>프레임과 배경을 골라 너만의 한 장을 남겨봐.</p>
+      <button class="btn btn-primary" id="btn-begin">시작하기</button>
+      <div class="hero-steps">
+        <span><i>01</i> 프레임</span>
+        <span class="step-dot">·</span>
+        <span><i>02</i> 배경</span>
+        <span class="step-dot">·</span>
+        <span><i>03</i> 촬영</span>
+        <span class="step-dot">·</span>
+        <span><i>04</i> 저장</span>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- 촬영 화면 -->
-    <section id="screen-shoot" class="screen">
-      <div class="shoot-grid">
-        <div class="cam-wrap">
-          <div class="cam-frame">
-            <video id="video" autoplay playsinline></video>
-            <div class="cam-overlay">
-              <div class="countdown" id="countdown"></div>
-              <div class="flash" id="flash"></div>
-            </div>
-            <div class="cam-corners">
-              <span></span><span></span><span></span><span></span>
-            </div>
+  <!-- ====== 2. 프레임 선택 ====== -->
+  <section id="screen-frame" class="screen">
+    <div class="select-head">
+      <p class="step-label">step 01</p>
+      <h2 class="section-title">Select Frame</h2>
+      <p class="section-sub">포토스트립의 스타일을 골라봐</p>
+    </div>
+
+    <div class="carousel">
+      <button class="carousel-arrow" id="frame-prev" aria-label="이전">‹</button>
+
+      <div class="carousel-stage" id="frame-stage">
+        <!-- JS로 채움 -->
+      </div>
+
+      <button class="carousel-arrow" id="frame-next" aria-label="다음">›</button>
+    </div>
+
+    <div class="carousel-meta">
+      <p class="frame-name" id="frame-name">Black</p>
+      <div class="carousel-dots" id="frame-dots"></div>
+    </div>
+
+    <div class="select-actions">
+      <button class="btn btn-primary" id="btn-frame-select">Select</button>
+    </div>
+  </section>
+
+  <!-- ====== 3. 배경 선택 ====== -->
+  <section id="screen-bg" class="screen">
+    <div class="select-head">
+      <p class="step-label">step 02</p>
+      <h2 class="section-title">Select Background</h2>
+      <p class="section-sub">별, 단색, 또는 패턴 중에 골라봐</p>
+    </div>
+
+    <div class="bg-section-actions">
+      <button class="btn btn-soft" id="btn-skip-bg">SKIP — 나중에 고르기</button>
+    </div>
+
+    <div class="bg-group">
+      <h3 class="bg-group-title">Star backgrounds</h3>
+      <div class="bg-grid" id="bg-stars-grid"></div>
+    </div>
+
+    <div class="bg-group">
+      <h3 class="bg-group-title">Basic backgrounds</h3>
+      <div class="bg-grid" id="bg-basic-grid"></div>
+    </div>
+
+    <div class="bg-group">
+      <h3 class="bg-group-title">No background</h3>
+      <div class="bg-grid" id="bg-none-grid"></div>
+    </div>
+
+    <div class="select-actions">
+      <button class="btn btn-primary" id="btn-bg-select">Select</button>
+    </div>
+  </section>
+
+  <!-- ====== 4. 촬영 ====== -->
+  <section id="screen-shoot" class="screen">
+    <div class="shoot-layout">
+      <div class="shoot-main">
+        <div class="cam-frame">
+          <video id="video" autoplay playsinline></video>
+          <div class="cam-overlay">
+            <div class="countdown" id="countdown"></div>
+            <div class="flash" id="flash"></div>
           </div>
-          <div class="cam-info">
-            <span id="shot-count">0 / 4</span>
-            <span class="dot">·</span>
-            <span id="cam-status">대기 중</span>
+          <div class="cam-corners">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="cam-info">
+          <span id="shot-count">0 / 4</span>
+          <span class="dot">·</span>
+          <span id="cam-status">준비 중</span>
+        </div>
+      </div>
+
+      <aside class="shoot-side">
+        <div class="side-block">
+          <h3 class="side-title">필터</h3>
+          <div class="filter-list" id="filter-list">
+            <button class="chip active" data-filter="none">오리지널</button>
+            <button class="chip" data-filter="bw">흑백</button>
+            <button class="chip" data-filter="sepia">세피아</button>
+            <button class="chip" data-filter="vintage">빈티지</button>
+            <button class="chip" data-filter="bright">밝게</button>
           </div>
         </div>
 
-        <aside class="controls">
-          <div class="control-block">
-            <h3 class="control-title">필터</h3>
-            <div class="filter-list" id="filter-list">
-              <button class="filter-chip active" data-filter="none">오리지널</button>
-              <button class="filter-chip" data-filter="bw">흑백</button>
-              <button class="filter-chip" data-filter="sepia">세피아</button>
-              <button class="filter-chip" data-filter="vintage">빈티지</button>
-              <button class="filter-chip" data-filter="bright">밝게</button>
-            </div>
+        <div class="side-block">
+          <h3 class="side-title">진행 상황</h3>
+          <div class="progress-strip" id="progress-strip">
+            <div class="progress-slot" data-i="0"></div>
+            <div class="progress-slot" data-i="1"></div>
+            <div class="progress-slot" data-i="2"></div>
+            <div class="progress-slot" data-i="3"></div>
           </div>
-
-          <div class="control-block">
-            <h3 class="control-title">미리보기</h3>
-            <div class="preview-strip" id="preview-strip">
-              <div class="preview-slot" data-i="0"></div>
-              <div class="preview-slot" data-i="1"></div>
-              <div class="preview-slot" data-i="2"></div>
-              <div class="preview-slot" data-i="3"></div>
-            </div>
-          </div>
-
-          <button class="btn-primary" id="btn-shoot">촬영 시작</button>
-          <button class="btn-ghost" id="btn-retake-all" disabled>다시 찍기</button>
-        </aside>
-      </div>
-    </section>
-
-    <!-- 결과 화면 -->
-    <section id="screen-result" class="screen">
-      <div class="result-grid">
-        <div class="result-canvas-wrap">
-          <canvas id="result-canvas"></canvas>
         </div>
 
-        <aside class="controls">
-          <div class="control-block">
-            <h3 class="control-title">프레임 색상</h3>
-            <div class="color-list" id="color-list">
-              <button class="color-chip active" data-color="#111111" style="--c:#111111" title="블랙"></button>
-              <button class="color-chip" data-color="#fafafa" style="--c:#fafafa" title="화이트"></button>
-              <button class="color-chip" data-color="#f4c3d0" style="--c:#f4c3d0" title="핑크"></button>
-              <button class="color-chip" data-color="#cdb8e3" style="--c:#cdb8e3" title="라벤더"></button>
-              <button class="color-chip" data-color="#e8dcc4" style="--c:#e8dcc4" title="베이지"></button>
-              <button class="color-chip" data-color="#b8c9b0" style="--c:#b8c9b0" title="세이지"></button>
-              <button class="color-chip" data-color="#6b9bd1" style="--c:#6b9bd1" title="블루"></button>
-              <button class="color-chip" data-color="#d4a574" style="--c:#d4a574" title="카멜"></button>
-            </div>
-          </div>
+        <button class="btn btn-primary" id="btn-shoot">촬영 시작</button>
+        <button class="btn btn-ghost" id="btn-retake-all" disabled>다시 찍기</button>
+      </aside>
+    </div>
+  </section>
 
-          <div class="control-block">
-            <h3 class="control-title">날짜 표시</h3>
-            <label class="toggle">
-              <input type="checkbox" id="toggle-date" checked />
-              <span class="toggle-track"><span class="toggle-thumb"></span></span>
-              <span class="toggle-label">날짜 넣기</span>
-            </label>
-          </div>
-
-          <button class="btn-primary" id="btn-download">사진 저장하기 ↓</button>
-          <button class="btn-ghost" id="btn-restart">처음으로</button>
-        </aside>
+  <!-- ====== 5. 결과 ====== -->
+  <section id="screen-result" class="screen">
+    <div class="result-layout">
+      <div class="result-canvas-wrap">
+        <canvas id="result-canvas" aria-label="포토스트립 결과"></canvas>
       </div>
-    </section>
-  </main>
+
+      <aside class="result-side">
+        <div class="side-block">
+          <h3 class="side-title">옵션</h3>
+          <label class="toggle">
+            <input type="checkbox" id="toggle-date" checked />
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span class="toggle-label">날짜 표시</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="toggle-title" checked />
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span class="toggle-label">상단 타이틀 표시</span>
+          </label>
+        </div>
+
+        <div class="side-block">
+          <h3 class="side-title">현재 설정</h3>
+          <div class="settings-row">
+            <span>프레임</span>
+            <span class="settings-val" id="result-frame-name">—</span>
+          </div>
+          <div class="settings-row">
+            <span>배경</span>
+            <span class="settings-val" id="result-bg-name">—</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-download">사진 저장하기 ↓</button>
+        <button class="btn btn-ghost" id="btn-restart">처음으로</button>
+      </aside>
+    </div>
+  </section>
 
   <footer class="site-footer">
-    <span>made with ✦ for fun</span>
+    <span>made with ★ for fun</span>
     <span class="footer-dot">·</span>
     <span>young-star.com</span>
   </footer>
