@@ -390,22 +390,28 @@ async function drawResult() {
     const img = new Image();
     img.onload = () => {
       const y = padTop + i * (cellH + gap);
+      const hasBackground = state.background && state.background.color;
 
-      // 배경
-      if (state.background && state.background.color) {
+      // 배경이 있으면 셀 전체에 배경 깔기
+      if (hasBackground) {
         ctx.fillStyle = state.background.color;
         ctx.fillRect(padX, y, innerW, cellH);
         if (state.background.group === 'stars') {
           drawStarsOnRect(ctx, padX, y, innerW, cellH, state.background.starColor);
         }
-      } else {
-        ctx.fillStyle = '#000';
-        ctx.fillRect(padX, y, innerW, cellH);
       }
 
-      // 사진 cover
+      // 배경이 있으면 사진을 살짝 작게 그려서 배경이 테두리처럼 보이게,
+      // 배경이 없으면 사진을 셀 전체에 꽉 채워서 그리기
+      const inset = hasBackground ? 18 : 0;
+      const dx = padX + inset;
+      const dy = y + inset;
+      const dw = innerW - inset * 2;
+      const dh = cellH - inset * 2;
+
+      // 사진 cover 크롭
       const ir = img.width / img.height;
-      const cr = innerW / cellH;
+      const cr = dw / dh;
       let sx = 0, sy = 0, sw = img.width, sh = img.height;
       if (ir > cr) {
         sw = img.height * cr;
@@ -414,7 +420,7 @@ async function drawResult() {
         sh = img.width / cr;
         sy = (img.height - sh) / 2;
       }
-      ctx.drawImage(img, sx, sy, sw, sh, padX, y, innerW, cellH);
+      ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
 
       resolve();
     };
