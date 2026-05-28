@@ -348,32 +348,34 @@ function getBackgroundCanvas(w, h) {
   bctx.fillStyle = bg.color;
   bctx.fillRect(0, 0, w, h);
 
-  // 별 배경이면 별 그리기
+  // 별 배경이면 별 그리기 (무조건 잘 보이게)
   if (bg.group === 'stars') {
     bctx.fillStyle = bg.starColor;
+    // 그림자 효과 (글로우)
     bctx.shadowColor = bg.starColor;
-    bctx.shadowBlur = 15;
+    bctx.shadowBlur = 20;
 
-    const cols = 7, rows = 6;
-    const stepX = w / cols, stepY = h / rows;
+    // 캔버스 크기 기준으로 별 크기 계산 (화면 너비의 4~6%)
+    const starSize = Math.min(w, h) * 0.05;
+
+    // 격자 배치: 5열 × 7행 = 35개
+    const cols = 5;
+    const rows = 7;
+    const cellW = w / cols;
+    const cellH = h / rows;
+
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
+        // 격자 셀 중앙에서 약간 랜덤(시드 기반) 오프셋
         const seed = r * cols + c;
-        const offX = ((seed * 37) % 60) - 30;
-        const offY = ((seed * 23) % 50) - 25;
-        const cx = stepX * (c + 0.5) + offX;
-        const cy = stepY * (r + 0.5) + offY;
-        const size = 24 + (seed % 5) * 5;
-        drawStarShape(bctx, cx, cy, size);
+        const offX = ((seed * 73) % (cellW * 0.4)) - cellW * 0.2;
+        const offY = ((seed * 41) % (cellH * 0.4)) - cellH * 0.2;
+        const cx = cellW * (c + 0.5) + offX;
+        const cy = cellH * (r + 0.5) + offY;
+        // 크기도 살짝 다양하게 (기본 크기의 80%~120%)
+        const sizeVar = 0.8 + (seed % 5) * 0.1;
+        drawStarShape(bctx, cx, cy, starSize * sizeVar);
       }
-    }
-    // 한 번 더 작은 별 흩뿌리기
-    bctx.shadowBlur = 8;
-    for (let i = 0; i < 20; i++) {
-      const cx = (i * 137) % w;
-      const cy = (i * 211) % h;
-      const size = 8 + (i % 4) * 2;
-      drawStarShape(bctx, cx, cy, size);
     }
   }
 
@@ -496,7 +498,7 @@ async function shootSequence() {
   state.shooting = false;
   $('btn-shoot').disabled = false;
   $('btn-retake-all').disabled = false;
-  $('cam-status').textContent = 'tada';
+  $('cam-status').textContent = 'smile';
 
   await sleep(600);
   goToResult();
