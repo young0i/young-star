@@ -95,7 +95,7 @@ function renderFrameCarousel() {
     const card = document.createElement('div');
     card.className = `frame-card theme-${f.theme} ${pos}`;
     card.innerHTML = `
-      <div class="frame-card-title">young ★ star</div>
+      <div class="frame-card-title">young ★ stern</div>
       <div class="frame-card-slot"></div>
       <div class="frame-card-slot"></div>
       <div class="frame-card-slot"></div>
@@ -646,7 +646,7 @@ async function drawResult() {
     ctx.fillStyle = frame.text;
     ctx.textAlign = 'center';
     ctx.font = 'italic 400 26px Fraunces, serif';
-    ctx.fillText('young ★ star', W / 2, 48);
+    ctx.fillText('young ★ stern', W / 2, 48);
   }
 
   // 5) 하단 — 로고 없이 날짜만
@@ -763,7 +763,7 @@ $('btn-download').addEventListener('click', () => {
   const link = document.createElement('a');
   const d = new Date();
   const ts = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}_${String(d.getHours()).padStart(2, '0')}${String(d.getMinutes()).padStart(2, '0')}`;
-  link.download = `young-star_${ts}.png`;
+  link.download = `young-stern_${ts}.png`;
   link.href = $('result-canvas').toDataURL('image/png');
   link.click();
 });
