@@ -11,6 +11,7 @@ const FRAMES = [
   { id: 'azure',      name: 'Azure',      theme: 'azure',      bg: '#2e4a8a', text: '#eaf0fa' },
   { id: 'starry-ink', name: 'Starry Ink', theme: 'starry-ink', bg: '#0a0a0a', text: '#ffffff', stars: '#ffffff' },
   { id: 'starry-rose',name: 'Starry Rose',theme: 'starry-rose',bg: '#5a1f3a', text: '#fff0e6', stars: '#f5c44a' },
+  { id: 'starry-blue',name: 'Starry Blue',theme: 'starry-blue',bg: '#1a2f5a', text: '#e8f0ff', stars: '#87ceeb' },
 ];
 
 const BACKGROUNDS = {
@@ -543,7 +544,7 @@ async function shootSequence() {
 
   state.shooting = false;
   $('btn-shoot').disabled = false;
-  $('cam-status').textContent = 'looking gorgeous.';
+  $('cam-status').textContent = 'smile :)';
 
   await sleep(600);
   goToResult();

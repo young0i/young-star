@@ -517,15 +517,15 @@ body::before {
   background: #0a0a0a;
   color: #ffffff;
   background-image:
-    radial-gradient(circle at 15% 20%, #fff 2px, transparent 3px),
-    radial-gradient(circle at 70% 15%, #fff 2px, transparent 3px),
-    radial-gradient(circle at 40% 45%, #fff 1.5px, transparent 2.5px),
-    radial-gradient(circle at 85% 70%, #fff 2px, transparent 3px),
-    radial-gradient(circle at 25% 80%, #fff 1.5px, transparent 2.5px),
-    radial-gradient(circle at 65% 90%, #fff 2px, transparent 3px),
-    radial-gradient(circle at 50% 30%, #fff 1px, transparent 2px),
-    radial-gradient(circle at 20% 55%, #fff 1px, transparent 2px),
-    radial-gradient(circle at 80% 40%, #fff 1.5px, transparent 2.5px);
+    radial-gradient(circle at 15% 20%, #fff 3.5px, transparent 4.5px),
+    radial-gradient(circle at 70% 15%, #fff 3.5px, transparent 4.5px),
+    radial-gradient(circle at 40% 45%, #fff 2.5px, transparent 3.5px),
+    radial-gradient(circle at 85% 70%, #fff 3.5px, transparent 4.5px),
+    radial-gradient(circle at 25% 80%, #fff 2.5px, transparent 3.5px),
+    radial-gradient(circle at 65% 90%, #fff 3.5px, transparent 4.5px),
+    radial-gradient(circle at 50% 30%, #fff 2px, transparent 3px),
+    radial-gradient(circle at 20% 55%, #fff 2px, transparent 3px),
+    radial-gradient(circle at 80% 40%, #fff 2.5px, transparent 3.5px);
 }
 .frame-card.theme-starry-ink .frame-card-slot { background: #ededed; }
 
@@ -533,17 +533,33 @@ body::before {
   background: #5a1f3a;
   color: #fff0e6;
   background-image:
-    radial-gradient(circle at 15% 20%, #f5c44a 2px, transparent 3px),
-    radial-gradient(circle at 70% 15%, #f5c44a 2px, transparent 3px),
-    radial-gradient(circle at 40% 45%, #f5c44a 1.5px, transparent 2.5px),
-    radial-gradient(circle at 85% 70%, #f5c44a 2px, transparent 3px),
-    radial-gradient(circle at 25% 80%, #f5c44a 1.5px, transparent 2.5px),
-    radial-gradient(circle at 65% 90%, #f5c44a 2px, transparent 3px),
-    radial-gradient(circle at 50% 30%, #f5c44a 1px, transparent 2px),
-    radial-gradient(circle at 20% 55%, #f5c44a 1px, transparent 2px),
-    radial-gradient(circle at 80% 40%, #f5c44a 1.5px, transparent 2.5px);
+    radial-gradient(circle at 15% 20%, #f5c44a 3.5px, transparent 4.5px),
+    radial-gradient(circle at 70% 15%, #f5c44a 3.5px, transparent 4.5px),
+    radial-gradient(circle at 40% 45%, #f5c44a 2.5px, transparent 3.5px),
+    radial-gradient(circle at 85% 70%, #f5c44a 3.5px, transparent 4.5px),
+    radial-gradient(circle at 25% 80%, #f5c44a 2.5px, transparent 3.5px),
+    radial-gradient(circle at 65% 90%, #f5c44a 3.5px, transparent 4.5px),
+    radial-gradient(circle at 50% 30%, #f5c44a 2px, transparent 3px),
+    radial-gradient(circle at 20% 55%, #f5c44a 2px, transparent 3px),
+    radial-gradient(circle at 80% 40%, #f5c44a 2.5px, transparent 3.5px);
 }
 .frame-card.theme-starry-rose .frame-card-slot { background: #f0d8c4; }
+
+.frame-card.theme-starry-blue {
+  background: #1a2f5a;
+  color: #e8f0ff;
+  background-image:
+    radial-gradient(circle at 15% 20%, #87ceeb 3.5px, transparent 4.5px),
+    radial-gradient(circle at 70% 15%, #87ceeb 3.5px, transparent 4.5px),
+    radial-gradient(circle at 40% 45%, #87ceeb 2.5px, transparent 3.5px),
+    radial-gradient(circle at 85% 70%, #87ceeb 3.5px, transparent 4.5px),
+    radial-gradient(circle at 25% 80%, #87ceeb 2.5px, transparent 3.5px),
+    radial-gradient(circle at 65% 90%, #87ceeb 3.5px, transparent 4.5px),
+    radial-gradient(circle at 50% 30%, #87ceeb 2px, transparent 3px),
+    radial-gradient(circle at 20% 55%, #87ceeb 2px, transparent 3px),
+    radial-gradient(circle at 80% 40%, #87ceeb 2.5px, transparent 3.5px);
+}
+.frame-card.theme-starry-blue .frame-card-slot { background: #d4e5f7; }
 
 .frame-meta {
   text-align: center;
@@ -966,11 +982,16 @@ body::before {
 .result-side-info {
   display: flex;
   flex-direction: column;
+  gap: 14px;
 }
 
 .result-side-info .kicker { margin-bottom: 14px; }
 .result-side-info .big-title { margin-bottom: 18px; }
 .result-side-info .sub { margin-bottom: 36px; }
+
+.result-side-info .cta {
+  width: 100%;
+}
 
 .option-list {
   display: flex;
