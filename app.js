@@ -95,7 +95,7 @@ function renderFrameCarousel() {
     const card = document.createElement('div');
     card.className = `frame-card theme-${f.theme} ${pos}`;
     card.innerHTML = `
-      <div class="frame-card-title">young ★ stern</div>
+      <div class="frame-card-title">YOUNG ★ STERN</div>
       <div class="frame-card-slot"></div>
       <div class="frame-card-slot"></div>
       <div class="frame-card-slot"></div>
@@ -645,8 +645,8 @@ async function drawResult() {
   if (state.showTitle) {
     ctx.fillStyle = frame.text;
     ctx.textAlign = 'center';
-    ctx.font = 'italic 400 26px Fraunces, serif';
-    ctx.fillText('young ★ stern', W / 2, 48);
+    ctx.font = '400 24px "Press Start 2P"';
+    ctx.fillText('YOUNG ★ STERN', W / 2, 48);
   }
 
   // 5) 하단 — 로고 없이 날짜만
@@ -656,7 +656,7 @@ async function drawResult() {
     const dateStr = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
     ctx.fillStyle = frame.text;
     ctx.textAlign = 'center';
-    ctx.font = '400 14px Inter, sans-serif';
+    ctx.font = '400 10px "Press Start 2P"';
     ctx.globalAlpha = 0.6;
     ctx.fillText(`${dateStr}  ·  yy`, W / 2, footerY);
     ctx.globalAlpha = 1;
