@@ -598,7 +598,7 @@ async function drawResult() {
     // 60개 정도 흩뿌리기, 크기는 12~28px로 충분히 크게
     const positions = [];
     let seed = 1;
-    while (positions.length < 60) {
+    while (positions.length < 40) {
       seed = (seed * 9301 + 49297) % 233280;
       const x = (seed / 233280) * W;
       seed = (seed * 9301 + 49297) % 233280;
@@ -716,7 +716,7 @@ function drawFrameCardStars(card, frame) {
     positions.push([x, y]);
   }
   positions.forEach(([cx, cy], i) => {
-    const size =  4 + (i % 4) * 1.5; // 4~8.5px
+    const size = 3 + (i % 5) * 1;// 4~8.5px
     drawStarShape(ctx, cx, cy, size);
   });
 
