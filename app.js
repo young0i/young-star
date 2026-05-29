@@ -525,7 +525,6 @@ async function shootSequence() {
   });
 
   $('btn-shoot').disabled = true;
-  $('btn-retake-all').disabled = true;
 
   for (let i = 0; i < 4; i++) {
     $('cam-status').textContent = `frame ${i + 1} — get ready`;
@@ -544,8 +543,7 @@ async function shootSequence() {
 
   state.shooting = false;
   $('btn-shoot').disabled = false;
-  $('btn-retake-all').disabled = false;
-  $('cam-status').textContent = 'smile :)';
+  $('cam-status').textContent = 'looking gorgeous.';
 
   await sleep(600);
   goToResult();
@@ -553,21 +551,10 @@ async function shootSequence() {
 
 $('btn-shoot').addEventListener('click', shootSequence);
 
+// 다시 찍기 — 결과 화면에서만 보임
 $('btn-retake-all').addEventListener('click', () => {
-  // 결과 화면에서 눌렀으면 촬영 화면으로 돌아가기
-  if (document.querySelector('.screen.active')?.id === 'screen-result') {
-    showScreen('screen-shoot');
-  }
-  // 슬롯 리셋
-  state.shots = [];
-  state.shotCount = 0;
-  $('shot-count').textContent = '0 / 4';
-  document.querySelectorAll('.p-slot').forEach(s => {
-    s.classList.remove('filled');
-    s.style.backgroundImage = '';
-  });
-  $('btn-retake-all').disabled = true;
-  // 바로 다시 촬영 시작
+  // 촬영 화면으로 돌아가서 자동으로 다시 시작
+  showScreen('screen-shoot');
   shootSequence();
 });
 
@@ -586,32 +573,39 @@ async function drawResult() {
   ctx.fillStyle = frame.bg;
   ctx.fillRect(0, 0, W, H);
 
-  // 프레임에 별 무늬가 있으면 뿌리기
-  if (frame.stars) {
-    ctx.save();
-    ctx.fillStyle = frame.stars;
-    ctx.shadowColor = frame.stars;
-    ctx.shadowBlur = 10;
-    // 프레임 전체에 흩뿌리기 (사진 영역 침범해도 사진이 덮으니까 괜찮음)
-    const starCount = 50;
-    for (let i = 0; i < starCount; i++) {
-      const seed = i;
-      const cx = ((seed * 137) % W);
-      const cy = ((seed * 211) % H);
-      const size = 6 + (seed % 5) * 2;
-      drawStarShape(ctx, cx, cy, size);
-    }
-    ctx.restore();
-  }
-
-  // 2) 사진 영역 계산
+  // 2) 사진 영역 계산 (별 그리기 전에 미리 계산)
   const padX = 42;
   const padTop = 72;
-  const padBottom = 110;  // 로고 빠져서 여백 축소
+  const padBottom = 110;
   const gap = 16;
   const innerW = W - padX * 2;
   const innerH = H - padTop - padBottom;
   const cellH = (innerH - gap * 3) / 4;
+
+  // 프레임에 별 무늬가 있으면 전체에 뿌리기 (사진 영역 위/주변 다)
+  if (frame.stars) {
+    ctx.save();
+    ctx.fillStyle = frame.stars;
+    ctx.shadowColor = frame.stars;
+    ctx.shadowBlur = 14;
+
+    // 60개 정도 흩뿌리기, 크기는 12~28px로 충분히 크게
+    const positions = [];
+    let seed = 1;
+    while (positions.length < 60) {
+      seed = (seed * 9301 + 49297) % 233280;
+      const x = (seed / 233280) * W;
+      seed = (seed * 9301 + 49297) % 233280;
+      const y = (seed / 233280) * H;
+      positions.push([x, y]);
+    }
+
+    positions.forEach(([cx, cy], i) => {
+      const size = 12 + (i % 5) * 4; // 12, 16, 20, 24, 28 반복
+      drawStarShape(ctx, cx, cy, size);
+    });
+    ctx.restore();
+  }
 
   // 3) 사진 그리기 (이미 인물+배경이 합쳐진 상태로 들어옴)
   await Promise.all(state.shots.map((src, i) => new Promise((resolve) => {
@@ -738,7 +732,6 @@ $('btn-restart').addEventListener('click', () => {
     s.classList.remove('filled');
     s.style.backgroundImage = '';
   });
-  $('btn-retake-all').disabled = true;
   showScreen('screen-intro');
 });
 

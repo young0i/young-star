@@ -70,7 +70,7 @@
       <div class="select-text">
         <p class="kicker">step 01</p>
         <h2 class="big-title">choose <em>your</em><br/>frame.</h2>
-        <p class="sub">6가지 톤. 한 컷이 가장 너다워질 색으로.</p>
+        <p class="sub"></p>
       </div>
 
       <div class="frame-showcase">
@@ -115,7 +115,7 @@
       <div class="select-text bg-stage-head">
         <p class="kicker">step 02</p>
         <h2 class="big-title">pick a <em>backdrop.</em></h2>
-        <p class="sub">별이 가득한 무대, 혹은 단색의 고요함.</p>
+        <p class="sub"></p>
       </div>
 
       <div class="bg-rail">
@@ -169,8 +169,8 @@
           <canvas id="cam-canvas"></canvas>
           <div class="ai-loading" id="ai-loading">
             <div class="ai-spinner"></div>
-            <p>AI 모델 불러오는 중...</p>
-            <p class="ai-sub">처음만 좀 걸려요</p>
+            <p>loading ...</p>
+            <p class="ai-sub"></p>
           </div>
           <div class="countdown" id="countdown"></div>
           <div class="flash" id="flash"></div>
@@ -184,11 +184,11 @@
 
       <div class="shoot-controls">
         <div class="filter-bar" id="filter-list">
-          <button class="filter-btn active" data-filter="none">오리지널</button>
-          <button class="filter-btn" data-filter="bw">흑백</button>
-          <button class="filter-btn" data-filter="sepia">세피아</button>
-          <button class="filter-btn" data-filter="vintage">빈티지</button>
-          <button class="filter-btn" data-filter="bright">밝게</button>
+          <button class="filter-btn active" data-filter="none">original</button>
+          <button class="filter-btn" data-filter="bw">monotone</button>
+          <button class="filter-btn" data-filter="sepia">sepia</button>
+          <button class="filter-btn" data-filter="vintage">vintage</button>
+          <button class="filter-btn" data-filter="bright">bright</button>
         </div>
 
         <div class="progress-bar" id="progress-strip">
@@ -199,7 +199,6 @@
         </div>
 
         <div class="shoot-buttons">
-          <button class="ghost-btn" id="btn-retake-all" disabled>다시 찍기</button>
           <button class="cta" id="btn-shoot">
             <span class="cta-text">shoot</span>
             <span class="cta-arrow">●</span>
@@ -212,7 +211,7 @@
   <!-- ===== 결과 ===== -->
   <section id="screen-result" class="screen">
     <nav class="top-nav">
-      <button class="nav-btn" id="btn-restart">← 처음으로</button>
+      <button class="nav-btn" id="btn-restart">← restart</button>
       <div class="step-indicator">
         <span class="step done">capture complete</span>
       </div>
@@ -223,18 +222,18 @@
       <div class="result-side-info">
         <p class="kicker">your moment</p>
         <h2 class="big-title">it's <em>yours.</em></h2>
-        <p class="sub">옵션을 켜고 끄며 마음에 들 때 저장해.</p>
+        <p class="sub">save when you like</p>
 
         <div class="option-list">
           <label class="opt-toggle">
             <input type="checkbox" id="toggle-title" checked />
             <span class="opt-box"></span>
-            <span class="opt-label">상단 타이틀</span>
+            <span class="opt-label">top title</span>
           </label>
           <label class="opt-toggle">
             <input type="checkbox" id="toggle-date" checked />
             <span class="opt-box"></span>
-            <span class="opt-label">날짜 표시</span>
+            <span class="opt-label">date display</span>
           </label>
         </div>
 
@@ -247,6 +246,7 @@
           <span class="cta-text">save photo</span>
           <span class="cta-arrow">↓</span>
         </button>
+        <button class="ghost-btn" id="btn-retake-all">retake all</button>
       </div>
 
       <div class="result-canvas-wrap">
