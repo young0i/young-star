@@ -507,38 +507,6 @@ body::before {
 }
 .frame-card.theme-moss .frame-card-slot { background: #d8e0c8; }
 
-.frame-card.theme-azure {
-  background: #2e4a8a;
-  color: #eaf0fa;
-}
-.frame-card.theme-azure .frame-card-slot { background: #b8c8e5; }
-
-.frame-card.theme-starry-ink {
-  background: #0a0a0a;
-  color: #ffffff;
-  background-image:
-    radial-gradient(circle at 20% 25%, #fff 0.5px, transparent 1.5px),
-    radial-gradient(circle at 70% 18%, #fff 0.5px, transparent 1.5px),
-    radial-gradient(circle at 45% 50%, #fff 0.5px, transparent 1.5px),
-    radial-gradient(circle at 85% 70%, #fff 0.5px, transparent 1.5px),
-    radial-gradient(circle at 30% 85%, #fff 0.5px, transparent 1.5px),
-    radial-gradient(circle at 60% 92%, #fff 0.5px, transparent 1.5px);
-}
-.frame-card.theme-starry-ink .frame-card-slot { background: #ededed; }
-
-.frame-card.theme-starry-rose {
-  background: #5a1f3a;
-  color: #fff0e6;
-  background-image:
-    radial-gradient(circle at 20% 25%, #f5c44a 0.5px, transparent 1.5px),
-    radial-gradient(circle at 70% 18%, #f5c44a 0.5px, transparent 1.5px),
-    radial-gradient(circle at 45% 50%, #f5c44a 0.5px, transparent 1.5px),
-    radial-gradient(circle at 85% 70%, #f5c44a 0.5px, transparent 1.5px),
-    radial-gradient(circle at 30% 85%, #f5c44a 0.5px, transparent 1.5px),
-    radial-gradient(circle at 60% 92%, #f5c44a 0.5px, transparent 1.5px);
-}
-.frame-card.theme-starry-rose .frame-card-slot { background: #f0d8c4; }
-
 .frame-meta {
   text-align: center;
 }

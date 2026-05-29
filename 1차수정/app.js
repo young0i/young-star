@@ -2,15 +2,12 @@
 
 // ===== 데이터 =====
 const FRAMES = [
-  { id: 'ink',        name: 'Ink',        theme: 'ink',        bg: '#0a0a0a', text: '#ffffff' },
-  { id: 'paper',      name: 'Paper',      theme: 'paper',      bg: '#f4ede0', text: '#2a1a14' },
-  { id: 'plum',       name: 'Plum',       theme: 'plum',       bg: '#3d1a4f', text: '#f0e6f8' },
-  { id: 'lilac',      name: 'Lilac',      theme: 'lilac',      bg: '#d4c5ee', text: '#2a1a4f' },
-  { id: 'blush',      name: 'Blush',      theme: 'blush',      bg: '#efcfd6', text: '#4a1f2a' },
-  { id: 'moss',       name: 'Moss',       theme: 'moss',       bg: '#3a4a35', text: '#ecf0e3' },
-  { id: 'azure',      name: 'Azure',      theme: 'azure',      bg: '#2e4a8a', text: '#eaf0fa' },
-  { id: 'starry-ink', name: 'Starry Ink', theme: 'starry-ink', bg: '#0a0a0a', text: '#ffffff', stars: '#ffffff' },
-  { id: 'starry-rose',name: 'Starry Rose',theme: 'starry-rose',bg: '#5a1f3a', text: '#fff0e6', stars: '#f5c44a' },
+  { id: 'ink',    name: 'Ink',    theme: 'ink',    bg: '#0a0a0a', text: '#ffffff' },
+  { id: 'paper',  name: 'Paper',  theme: 'paper',  bg: '#f4ede0', text: '#2a1a14' },
+  { id: 'plum',   name: 'Plum',   theme: 'plum',   bg: '#3d1a4f', text: '#f0e6f8' },
+  { id: 'lilac',  name: 'Lilac',  theme: 'lilac',  bg: '#d4c5ee', text: '#2a1a4f' },
+  { id: 'blush',  name: 'Blush',  theme: 'blush',  bg: '#efcfd6', text: '#4a1f2a' },
+  { id: 'moss',   name: 'Moss',   theme: 'moss',   bg: '#3a4a35', text: '#ecf0e3' },
 ];
 
 const BACKGROUNDS = {
@@ -196,8 +193,7 @@ function renderBackgrounds() {
     tile.className = 'bg-tile bg-checker';
     tile.innerHTML = `<span class="bg-tile-label">${bg.name}</span>`;
     tile.addEventListener('click', () => selectBackground(bg, 'none'));
-    // No backdrop은 state.background가 null일 때 active
-    if (state.background === null && state.bgNoneSelected) tile.classList.add('active');
+    if (state.background?.id === bg.id) tile.classList.add('active');
     noneRow.appendChild(tile);
   });
 }
@@ -205,11 +201,9 @@ function renderBackgrounds() {
 function selectBackground(bg, group) {
   if (group === 'none') {
     state.background = null;
-    state.bgNoneSelected = true;
   } else {
     state.background = bg;
     state.background.group = group;
-    state.bgNoneSelected = false;
   }
   invalidateBgCache();
   renderBackgrounds();
@@ -222,6 +216,11 @@ function isColorDark(hex) {
   const b = parseInt(c.substring(4, 6), 16);
   return (r * 299 + g * 587 + b * 114) / 1000 < 140;
 }
+
+$('btn-skip-bg').addEventListener('click', () => {
+  state.background = null;
+  proceedToShoot();
+});
 
 $('btn-bg-select').addEventListener('click', () => {
   proceedToShoot();
@@ -545,7 +544,7 @@ async function shootSequence() {
   state.shooting = false;
   $('btn-shoot').disabled = false;
   $('btn-retake-all').disabled = false;
-  $('cam-status').textContent = 'smile :)';
+  $('cam-status').textContent = 'smile';
 
   await sleep(600);
   goToResult();
@@ -554,11 +553,6 @@ async function shootSequence() {
 $('btn-shoot').addEventListener('click', shootSequence);
 
 $('btn-retake-all').addEventListener('click', () => {
-  // 결과 화면에서 눌렀으면 촬영 화면으로 돌아가기
-  if (document.querySelector('.screen.active')?.id === 'screen-result') {
-    showScreen('screen-shoot');
-  }
-  // 슬롯 리셋
   state.shots = [];
   state.shotCount = 0;
   $('shot-count').textContent = '0 / 4';
@@ -567,8 +561,7 @@ $('btn-retake-all').addEventListener('click', () => {
     s.style.backgroundImage = '';
   });
   $('btn-retake-all').disabled = true;
-  // 바로 다시 촬영 시작
-  shootSequence();
+  $('cam-status').textContent = "ready when you are.";
 });
 
 // ===== 5. 결과 그리기 =====
@@ -585,24 +578,6 @@ async function drawResult() {
   // 1) 프레임 배경
   ctx.fillStyle = frame.bg;
   ctx.fillRect(0, 0, W, H);
-
-  // 프레임에 별 무늬가 있으면 뿌리기
-  if (frame.stars) {
-    ctx.save();
-    ctx.fillStyle = frame.stars;
-    ctx.shadowColor = frame.stars;
-    ctx.shadowBlur = 10;
-    // 프레임 전체에 흩뿌리기 (사진 영역 침범해도 사진이 덮으니까 괜찮음)
-    const starCount = 50;
-    for (let i = 0; i < starCount; i++) {
-      const seed = i;
-      const cx = ((seed * 137) % W);
-      const cy = ((seed * 211) % H);
-      const size = 6 + (seed % 5) * 2;
-      drawStarShape(ctx, cx, cy, size);
-    }
-    ctx.restore();
-  }
 
   // 2) 사진 영역 계산
   const padX = 42;
