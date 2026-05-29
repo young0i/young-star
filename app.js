@@ -103,6 +103,11 @@ function renderFrameCarousel() {
     `;
     if (onclick) card.addEventListener('click', onclick);
     deck.appendChild(card);
+
+    // 별 프레임이면 결과물과 똑같은 별을 canvas로 그리기
+    if (f.stars) {
+      drawFrameCardStars(card, f);
+    }
   });
 
   $('frame-name').textContent = FRAMES[idx].name;
@@ -678,6 +683,45 @@ function drawStarsOnRect(ctx, x, y, w, h, starColor) {
     }
   }
   ctx.restore();
+}
+
+// 프레임 카드에 결과물과 똑같은 별을 canvas로 그리기
+function drawFrameCardStars(card, frame) {
+  const w = card.offsetWidth;
+  const h = card.offsetHeight;
+  if (w === 0 || h === 0) {
+    // 아직 레이아웃 안 됨 → 다음 프레임에 재시도
+    requestAnimationFrame(() => drawFrameCardStars(card, frame));
+    return;
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.className = 'frame-star-canvas';
+  canvas.width = w;
+  canvas.height = h;
+
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = frame.stars;
+  ctx.shadowColor = frame.stars;
+  ctx.shadowBlur = 8;
+
+  // 결과물과 동일한 방식으로 별 흩뿌리기
+  let seed = 1;
+  const positions = [];
+  while (positions.length < 28) {
+    seed = (seed * 9301 + 49297) % 233280;
+    const x = (seed / 233280) * w;
+    seed = (seed * 9301 + 49297) % 233280;
+    const y = (seed / 233280) * h;
+    positions.push([x, y]);
+  }
+  positions.forEach(([cx, cy], i) => {
+    const size = 7 + (i % 5) * 2; // 7~15px
+    drawStarShape(ctx, cx, cy, size);
+  });
+
+  // 카드 맨 앞에 삽입 (슬롯이 위에 와서 별을 가림 → 결과물과 동일)
+  card.insertBefore(canvas, card.firstChild);
 }
 
 function drawStarShape(ctx, cx, cy, size) {
