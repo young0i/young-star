@@ -456,7 +456,7 @@ body::before {
 
 @media (max-width: 768px) {
   .frame-card-title {
-    font-size: 3px; /* 모바일에서 더 작게 */
+    font-size: 3px !important; /* 모바일에서 더 작게 */
     letter-spacing: 0.04em;
   }
 }
