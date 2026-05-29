@@ -658,7 +658,7 @@ async function drawResult() {
     ctx.textAlign = 'center';
     ctx.font = '400 14px Inter, sans-serif';
     ctx.globalAlpha = 0.6;
-    ctx.fillText(`${dateStr}  ·  photo booth`, W / 2, footerY);
+    ctx.fillText(`${dateStr}  ·  yy`, W / 2, footerY);
     ctx.globalAlpha = 1;
   }
 
@@ -716,7 +716,7 @@ function drawFrameCardStars(card, frame) {
     positions.push([x, y]);
   }
   positions.forEach(([cx, cy], i) => {
-    const size = 7 + (i % 5) * 2; // 7~15px
+    const size =  4 + (i % 4) * 1.5; // 4~8.5px
     drawStarShape(ctx, cx, cy, size);
   });
 
