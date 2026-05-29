@@ -269,12 +269,12 @@ async function startCamera() {
 
     // AI 모델 초기화
     if (!selfieSegmentation) {
-      $('cam-status').textContent = "AI 모델 준비 중...";
+      $('cam-status').textContent = "loading ...";
       await initSegmentation();
     }
     $('ai-loading').classList.add('hidden');
     aiReady = true;
-    $('cam-status').textContent = "ready when you are.";
+    $('cam-status').textContent = "tap shoot when you're ready";
 
     // 렌더링 루프 시작
     startRenderLoop();
