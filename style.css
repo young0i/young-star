@@ -461,6 +461,12 @@ body::before {
   }
 }
 
+@media (max-width: 768px) {
+  .frame-card {
+    transform: scale(0.92);
+  }
+}
+
 .frame-card-slot {
   flex: 1;
   background: rgba(255,255,255,0.9);
