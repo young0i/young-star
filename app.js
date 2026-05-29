@@ -441,15 +441,11 @@ function captureFrame() {
   c.height = camCanvas.height;
   const ctx = c.getContext('2d');
 
-  // 1) ctx.filter로 한번 시도
-  if (state.filter !== 'none') {
-    ctx.filter = filterToCanvasString(state.filter);
-  }
+  // 1) 먼저 원본 그대로 그리기
   ctx.drawImage(camCanvas, 0, 0);
-  ctx.filter = 'none';
 
-  // 2) ctx.filter 지원 안 되는 브라우저 폴백 - 픽셀 직접 조작
-  if (state.filter !== 'none' && !supportsCtxFilter()) {
+  // 2) 필터가 있으면 무조건 픽셀 직접 조작으로 적용 (어떤 브라우저든 동일하게)
+  if (state.filter !== 'none') {
     applyPixelFilter(ctx, c.width, c.height, state.filter);
   }
 
@@ -548,7 +544,7 @@ async function shootSequence() {
   state.shooting = false;
   $('btn-shoot').disabled = false;
   $('btn-retake-all').disabled = false;
-  $('cam-status').textContent = 'looking gorgeous.';
+  $('cam-status').textContent = 'smile';
 
   await sleep(600);
   goToResult();
