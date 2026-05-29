@@ -581,7 +581,7 @@ async function drawResult() {
 
   // 2) 사진 영역 계산 (별 그리기 전에 미리 계산)
   const padX = 42;
-  const padTop = 72;
+  const padTop = 140;
   const padBottom = 110;
   const gap = 16;
   const innerW = W - padX * 2;
@@ -646,7 +646,7 @@ async function drawResult() {
     ctx.fillStyle = frame.text;
     ctx.textAlign = 'center';
     ctx.font = '400 24px "Press Start 2P"';
-    ctx.fillText('YOUNG ★ STERN', W / 2, 48);
+    ctx.fillText('YOUNG ★ STERN', W / 2, 100);
   }
 
   // 5) 하단 — 로고 없이 날짜만
@@ -656,7 +656,7 @@ async function drawResult() {
     const dateStr = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
     ctx.fillStyle = frame.text;
     ctx.textAlign = 'center';
-    ctx.font = '400 10px "Press Start 2P"';
+    ctx.font = '400 16px "Press Start 2P"';
     ctx.globalAlpha = 0.6;
     ctx.fillText(`${dateStr}  ·  yy`, W / 2, footerY);
     ctx.globalAlpha = 1;
