@@ -517,12 +517,15 @@ body::before {
   background: #0a0a0a;
   color: #ffffff;
   background-image:
-    radial-gradient(circle at 20% 25%, #fff 0.5px, transparent 1.5px),
-    radial-gradient(circle at 70% 18%, #fff 0.5px, transparent 1.5px),
-    radial-gradient(circle at 45% 50%, #fff 0.5px, transparent 1.5px),
-    radial-gradient(circle at 85% 70%, #fff 0.5px, transparent 1.5px),
-    radial-gradient(circle at 30% 85%, #fff 0.5px, transparent 1.5px),
-    radial-gradient(circle at 60% 92%, #fff 0.5px, transparent 1.5px);
+    radial-gradient(circle at 15% 20%, #fff 2px, transparent 3px),
+    radial-gradient(circle at 70% 15%, #fff 2px, transparent 3px),
+    radial-gradient(circle at 40% 45%, #fff 1.5px, transparent 2.5px),
+    radial-gradient(circle at 85% 70%, #fff 2px, transparent 3px),
+    radial-gradient(circle at 25% 80%, #fff 1.5px, transparent 2.5px),
+    radial-gradient(circle at 65% 90%, #fff 2px, transparent 3px),
+    radial-gradient(circle at 50% 30%, #fff 1px, transparent 2px),
+    radial-gradient(circle at 20% 55%, #fff 1px, transparent 2px),
+    radial-gradient(circle at 80% 40%, #fff 1.5px, transparent 2.5px);
 }
 .frame-card.theme-starry-ink .frame-card-slot { background: #ededed; }
 
@@ -530,12 +533,15 @@ body::before {
   background: #5a1f3a;
   color: #fff0e6;
   background-image:
-    radial-gradient(circle at 20% 25%, #f5c44a 0.5px, transparent 1.5px),
-    radial-gradient(circle at 70% 18%, #f5c44a 0.5px, transparent 1.5px),
-    radial-gradient(circle at 45% 50%, #f5c44a 0.5px, transparent 1.5px),
-    radial-gradient(circle at 85% 70%, #f5c44a 0.5px, transparent 1.5px),
-    radial-gradient(circle at 30% 85%, #f5c44a 0.5px, transparent 1.5px),
-    radial-gradient(circle at 60% 92%, #f5c44a 0.5px, transparent 1.5px);
+    radial-gradient(circle at 15% 20%, #f5c44a 2px, transparent 3px),
+    radial-gradient(circle at 70% 15%, #f5c44a 2px, transparent 3px),
+    radial-gradient(circle at 40% 45%, #f5c44a 1.5px, transparent 2.5px),
+    radial-gradient(circle at 85% 70%, #f5c44a 2px, transparent 3px),
+    radial-gradient(circle at 25% 80%, #f5c44a 1.5px, transparent 2.5px),
+    radial-gradient(circle at 65% 90%, #f5c44a 2px, transparent 3px),
+    radial-gradient(circle at 50% 30%, #f5c44a 1px, transparent 2px),
+    radial-gradient(circle at 20% 55%, #f5c44a 1px, transparent 2px),
+    radial-gradient(circle at 80% 40%, #f5c44a 1.5px, transparent 2.5px);
 }
 .frame-card.theme-starry-rose .frame-card-slot { background: #f0d8c4; }
 
