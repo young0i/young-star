@@ -433,67 +433,17 @@ function filterToCanvasString(f) {
   }
 }
 
-// 합성된 캔버스를 그대로 캡쳐 (필터 포함)
+// 합성된 캔버스를 그대로 캡쳐
 function captureFrame() {
   const camCanvas = $('cam-canvas');
+  // 필터까지 적용된 결과로 캡쳐하기 위해 임시 캔버스에 그리기
   const c = document.createElement('canvas');
   c.width = camCanvas.width;
   c.height = camCanvas.height;
   const ctx = c.getContext('2d');
-
-  // 1) ctx.filter로 한번 시도
-  if (state.filter !== 'none') {
-    ctx.filter = filterToCanvasString(state.filter);
-  }
+  ctx.filter = filterToCanvasString(state.filter);
   ctx.drawImage(camCanvas, 0, 0);
-  ctx.filter = 'none';
-
-  // 2) ctx.filter 지원 안 되는 브라우저 폴백 - 픽셀 직접 조작
-  if (state.filter !== 'none' && !supportsCtxFilter()) {
-    applyPixelFilter(ctx, c.width, c.height, state.filter);
-  }
-
   return c.toDataURL('image/jpeg', 0.92);
-}
-
-// ctx.filter 지원 여부 확인 (한 번만 체크하고 캐시)
-let _ctxFilterSupport = null;
-function supportsCtxFilter() {
-  if (_ctxFilterSupport !== null) return _ctxFilterSupport;
-  const c = document.createElement('canvas');
-  c.width = 1; c.height = 1;
-  const ctx = c.getContext('2d');
-  ctx.filter = 'grayscale(1)';
-  _ctxFilterSupport = ctx.filter === 'grayscale(1)';
-  return _ctxFilterSupport;
-}
-
-// 픽셀 직접 조작 필터 (폴백용)
-function applyPixelFilter(ctx, w, h, filter) {
-  const imgData = ctx.getImageData(0, 0, w, h);
-  const d = imgData.data;
-  for (let i = 0; i < d.length; i += 4) {
-    let r = d[i], g = d[i+1], b = d[i+2];
-    if (filter === 'bw') {
-      const gray = r * 0.299 + g * 0.587 + b * 0.114;
-      d[i] = d[i+1] = d[i+2] = gray;
-    } else if (filter === 'sepia') {
-      d[i]   = Math.min(255, r * 0.393 + g * 0.769 + b * 0.189);
-      d[i+1] = Math.min(255, r * 0.349 + g * 0.686 + b * 0.168);
-      d[i+2] = Math.min(255, r * 0.272 + g * 0.534 + b * 0.131);
-    } else if (filter === 'vintage') {
-      // 약한 세피아 + 채도 감소
-      const ns = Math.min(255, r * 0.5 + g * 0.5 + b * 0.4);
-      d[i]   = Math.min(255, r * 0.9 + ns * 0.1);
-      d[i+1] = Math.min(255, g * 0.85 + ns * 0.1);
-      d[i+2] = Math.min(255, b * 0.75 + ns * 0.1);
-    } else if (filter === 'bright') {
-      d[i]   = Math.min(255, r * 1.15);
-      d[i+1] = Math.min(255, g * 1.15);
-      d[i+2] = Math.min(255, b * 1.15);
-    }
-  }
-  ctx.putImageData(imgData, 0, 0);
 }
 
 // 카운트다운
@@ -548,7 +498,7 @@ async function shootSequence() {
   state.shooting = false;
   $('btn-shoot').disabled = false;
   $('btn-retake-all').disabled = false;
-  $('cam-status').textContent = 'looking gorgeous.';
+  $('cam-status').textContent = 'smile';
 
   await sleep(600);
   goToResult();
